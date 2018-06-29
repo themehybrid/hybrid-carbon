@@ -38,7 +38,6 @@ class Carbon {
 			'post_id'           => get_the_ID(),
 			'meta_key'          => false,
 			'size'              => has_image_size( 'post-thumbnail' ) ? 'post-thumbnail' : 'thumbnail',
-			'srcset_sizes'      => [],
 			'link'              => 'post',
 			'link_class'        => '',
 			'image_attr'        => [],
