@@ -2,6 +2,8 @@
 
 namespace Hybrid\Carbon\Locate\Types;
 
+use function Hybrid\Carbon\is_image_attachment;
+
 class Attachment extends Base {
 
 	/**
@@ -17,28 +19,21 @@ class Attachment extends Base {
 
 		$attachment_id = '';
 
-		// Check if the post itself is an image attachment.
-		if ( wp_attachment_is_image( $this->args['post_id'] ) ) {
+		if ( is_image_attachment( $this->args['post_id'] ) ) {
 
 			$attachment_id = $this->args['post_id'];
-		}
+		} else {
 
-		// If the post is not an image attachment, check if it has any image attachments.
-		else {
-
-			// Get attachments for the inputted $post_id.
-			$attachments = get_children(
-				array(
-					'numberposts'      => 1,
-					'post_parent'      => $this->args['post_id'],
-					'post_status'      => 'inherit',
-					'post_type'        => 'attachment',
-					'post_mime_type'   => 'image',
-					'order'            => 'ASC',
-					'orderby'          => 'menu_order ID',
-					'fields'           => 'ids'
-				)
-			);
+			$attachments = get_children( [
+				'numberposts'    => 1,
+				'post_parent'    => $this->args['post_id'],
+				'post_status'    => 'inherit',
+				'post_type'      => 'attachment',
+				'post_mime_type' => 'image',
+				'order'          => 'ASC',
+				'orderby'        => 'menu_order ID',
+				'fields'         => 'ids'
+			] );
 
 			// Check if any attachments were found.
 			if ( $attachments ) {
@@ -46,9 +41,11 @@ class Attachment extends Base {
 			}
 		}
 
-		if ( $attachment_id ) {
+		if ( $attachment_id && $attachment = $this->validateAttachment( $attachment_id ) ) {
 
-			$this->attachment( $attachment_id );
+			return $attachment;
 		}
+
+		return parent::make();
 	}
 }
