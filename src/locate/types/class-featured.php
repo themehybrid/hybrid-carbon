@@ -9,13 +9,11 @@ class Featured extends Base {
 		// Check for a post image ID (set by WP as a custom field).
 		$thumb_id = get_post_thumbnail_id( $this->args['post_id'] );
 
-		// If no post image ID is found, return.
-		if ( ! $thumb_id ) {
-			return;
+		if ( $thumb_id && $attachment = $this->validateAttachment( $thumb_id ) ) {
+
+			return $attachment;
 		}
 
-		$attachment = $this->validateAttachment( $thumb_id );
-
-		return $attachment ?: parent::make();
+		return parent::make();
 	}
 }
