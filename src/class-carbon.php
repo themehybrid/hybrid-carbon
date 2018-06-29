@@ -25,14 +25,16 @@ class Carbon {
 
 	public function __construct( $type = [], $args = [] ) {
 
-		foreach ( (array) $type as $index => $t ) {
+		$type = (array) $type;
+
+		foreach ( $type as $index => $t ) {
 
 			if ( ! in_array( $t, $this->allowed_types ) ) {
 				unset( $type[ $index ] );
 			}
 		}
 
-		$this->type = $type ?: 'featured';
+		$this->type = $type ?: [ 'featured' ];
 
 		$defaults = [
 			'post_id'           => get_the_ID(),
