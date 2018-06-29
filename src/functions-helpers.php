@@ -2,19 +2,24 @@
 
 namespace Hybrid\Carbon;
 
-function image( $args = [] ) {
+function carbon( $type, $args = [] ) {
 
-	return new Image( $args );
+	return new Carbon( $type, $args );
 }
 
-function render_image( $args = [] ) {
+function render_image( $type, $args = [] ) {
 
-	image( $args )->render();
+	carbon( $type, $args )->render();
 }
 
-function fetch_image( $args = [] ) {
+function fetch_image( $type, $args = [] ) {
 
-	return image( $args )->fetch();
+	return carbon( $type, $args )->fetch();
+}
+
+function is_image_attachment( $post_id ) {
+
+	return 'attachment' === get_post_type( $post_id ) && wp_attachment_is_image( $post_id );
 }
 
 /**
