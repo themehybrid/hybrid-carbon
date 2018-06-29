@@ -36,6 +36,8 @@ class Attachment {
 				false,
 				$attr
 			);
+
+			$this->html = $this->addLink( $this->html );
 		}
 
 		return $this->html;
@@ -79,5 +81,39 @@ class Attachment {
 		}
 
 		return $this->data;
+	}
+
+	protected function addLink( $html ) {
+
+		if ( false !== $this->args['link'] ) {
+
+			$url = '';
+
+			if ( 'post' === $this->args['link'] || true === $this->args['link'] ) {
+
+				$url = get_permalink( $this->args['post_id'] );
+
+			} elseif ( 'file' === $this->args['link'] ) {
+
+				$url = $this->image_args['src'];
+
+			} elseif ( 'attachment' === $this->args['link'] && isset( $this->image_args['id'] ) ) {
+
+				$url = get_permalink( $this->image_args['id'] );
+			}
+
+			if ( $url ) {
+				$class = $this->args['link_class'] ?: 'entry__image-link';
+
+				$html = sprintf(
+					'<a href="%s" class="%s">%s</a>',
+					esc_url( $url ),
+					esc_attr( $class ),
+					$html
+				);
+			}
+		}
+
+		return $html;
 	}
 }
