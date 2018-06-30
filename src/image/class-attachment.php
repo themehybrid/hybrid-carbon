@@ -95,11 +95,11 @@ class Attachment {
 
 			} elseif ( 'file' === $this->args['link'] ) {
 
-				$url = $this->image_args['src'];
+				$url = $this->src();
 
-			} elseif ( 'attachment' === $this->args['link'] && isset( $this->image_args['id'] ) ) {
+			} elseif ( 'attachment' === $this->args['link'] && isset( $this->attachment_id ) ) {
 
-				$url = get_permalink( $this->image_args['id'] );
+				$url = get_permalink( $this->attachment_id );
 			}
 
 			if ( $url ) {
