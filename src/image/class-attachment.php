@@ -45,12 +45,12 @@ class Attachment {
 
 	public function caption() {
 
-		return get_post_field( 'post_excerpt', $this->attachment_id );
+		return wp_get_attachment_caption( $this->attachment_id );
 	}
 
 	public function alt() {
 
-		return wp_get_attachment_caption( $this->attachment_id );
+		return trim( strip_tags( get_post_meta( $this->attachment_id, '_wp_attachment_image_alt', true ) ) );
 	}
 
 	public function width() {
