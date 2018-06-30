@@ -50,7 +50,7 @@ class Attachment {
 
 	public function alt() {
 
-		return trim( strip_tags( get_post_meta( $this->attachment_id, '_wp_attachment_image_alt', true ) ) );
+		return wp_get_attachment_caption( $this->attachment_id );
 	}
 
 	public function width() {
