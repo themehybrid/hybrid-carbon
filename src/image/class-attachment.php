@@ -1,18 +1,44 @@
 <?php
+/**
+ * Attachment image class.
+ *
+ * This is the image object (when loaded as an attachment) that's returned to
+ * the main plugin class and back to any functions used.
+ *
+ * @package   HybridCarbon
+ * @author    Justin Tadlock <justintadlock@gmail.com>
+ * @copyright Copyright (c) 2018, Justin Tadlock
+ * @link      https://github.com/justintadlock/hybrid-carbon
+ * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ */
 
 namespace Hybrid\Carbon\Image;
 
-class Attachment {
+/**
+ * Attachment image class.
+ *
+ * @since  1.0.0
+ * @access public
+ */
+class Attachment extends Image {
 
+	/**
+	 * ID of the attachment.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    int
+	 */
 	protected $attachment_id = 0;
-	protected $args = [];
-	protected $html = '';
-	protected $data = [];
+
+	protected $post_id = 0;
+	protected $size = 'thumbnail';
 
 	public function __construct( $attachment_id, $args = [] ) {
 
+		parent::__construct( $args );
+
 		$this->attachment_id = $attachment_id;
-		$this->args = $args;
 
 		$this->data();
 	}
@@ -27,12 +53,12 @@ class Attachment {
 		if ( ! $this->html ) {
 
 			$attr = [
-				'class' => "entry__image entry__image--{$this->args['size']}"
+				'class' => "entry__image entry__image--{$this->size}"
 			];
 
 			$this->html = wp_get_attachment_image(
 				$this->attachment_id,
-				$this->args['size'],
+				$this->size,
 				false,
 				$attr
 			);
@@ -53,67 +79,14 @@ class Attachment {
 		return trim( strip_tags( get_post_meta( $this->attachment_id, '_wp_attachment_image_alt', true ) ) );
 	}
 
-	public function width() {
-
-		return $this->data['width'];
-	}
-
-	public function height() {
-
-		return $this->data['height'];
-	}
-
-	public function src() {
-
-		return $this->data['src'];
-	}
-
 	private function data() {
 
-		if ( ! $this->data ) {
-			$image = wp_get_attachment_image_src( $this->attachment_id, $this->args['size'] );
+		$image = wp_get_attachment_image_src( $this->attachment_id, $this->size );
 
-			if ( $image ) {
-				$this->data['src']     = $image[0];
-				$this->data['width']   = $image[1];
-				$this->data['height']  = $image[2];
-			}
+		if ( $image ) {
+			$this->src     = $image[0];
+			$this->width   = $image[1];
+			$this->height  = $image[2];
 		}
-
-		return $this->data;
-	}
-
-	protected function addLink( $html ) {
-
-		if ( false !== $this->args['link'] ) {
-
-			$url = '';
-
-			if ( 'post' === $this->args['link'] || true === $this->args['link'] ) {
-
-				$url = get_permalink( $this->args['post_id'] );
-
-			} elseif ( 'file' === $this->args['link'] ) {
-
-				$url = $this->src();
-
-			} elseif ( 'attachment' === $this->args['link'] && isset( $this->attachment_id ) ) {
-
-				$url = get_permalink( $this->attachment_id );
-			}
-
-			if ( $url ) {
-				$class = $this->args['link_class'] ?: 'entry__image-link';
-
-				$html = sprintf(
-					'<a href="%s" class="%s">%s</a>',
-					esc_url( $url ),
-					esc_attr( $class ),
-					$html
-				);
-			}
-		}
-
-		return $html;
 	}
 }

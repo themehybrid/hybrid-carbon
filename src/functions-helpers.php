@@ -7,14 +7,19 @@ function carbon( $type, $args = [] ) {
 	return new Carbon( $type, $args );
 }
 
+function image( $type, $args = [] ) {
+
+	return carbon( $type, $args )->image();
+}
+
 function render_image( $type, $args = [] ) {
 
-	carbon( $type, $args )->render();
+	image( $type, $args )->render();
 }
 
 function fetch_image( $type, $args = [] ) {
 
-	return carbon( $type, $args )->fetch();
+	return image( $type, $args )->fetch();
 }
 
 function is_image_attachment( $post_id ) {

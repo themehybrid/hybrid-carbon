@@ -2,9 +2,10 @@
 
 namespace Hybrid\Carbon\Locate\Types;
 
+use Hybrid\Carbon\Image\Attachment;
 use function Hybrid\Carbon\is_image_attachment;
 
-class Attachment extends Base {
+class Attached extends Base {
 
 	/**
 	 * Gets the first image attached to the post.  If the post itself is an attachment image, that will
@@ -17,7 +18,8 @@ class Attachment extends Base {
 	 */
 	public function make() {
 
-		$attachment_id = '';
+		$image         = '';
+		$attachment_id = 0;
 
 		if ( is_image_attachment( $this->args['post_id'] ) ) {
 
@@ -41,11 +43,11 @@ class Attachment extends Base {
 			}
 		}
 
-		if ( $attachment_id && $attachment = $this->validateAttachment( $attachment_id ) ) {
+		if ( 0 < $attachment_id && is_image_attachment( $attachment_id ) ) {
 
-			return $attachment;
+			$image = new Attachment( $attachment_id, $this->args );
 		}
 
-		return parent::make();
+		return $this->validate( $image ) ? $image : parent::make();
 	}
 }

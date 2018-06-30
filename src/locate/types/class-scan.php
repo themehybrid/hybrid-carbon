@@ -2,6 +2,9 @@
 
 namespace Hybrid\Carbon\Locate\Types;
 
+use Hybrid\Carbon\Image\Attachment;
+use function Hybrid\Carbon\is_image_attachment;
+
 class Scan extends Base {
 
 	protected $blocks = [
@@ -43,12 +46,17 @@ class Scan extends Base {
 		// Loop through any found image IDs.
 		if ( is_array( $image_ids ) ) {
 
-			foreach ( $image_ids as $image_id ) {
+			foreach ( $image_ids as $attachment_id ) {
 
-				$attachment = $this->validateAttachment( $image_id );
+				$image = '';
 
-				if ( $attachment ) {
-					return $attachment;
+				if ( 0 < $attachment_id && is_image_attachment( $attachment_id ) ) {
+
+					$image = new Attachment( $attachment_id, $this->args );
+				}
+
+				if ( $image && $this->validate( $image ) ) {
+					return $image;
 				}
 			}
 		}

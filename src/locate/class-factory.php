@@ -9,7 +9,7 @@ class Factory {
 		// Gets the meta subnamespace with the trailing backslash.
 		$namespace = __NAMESPACE__ . '\\Types\\';
 
-		$class = $namespace . str_replace( '_', '', ucwords( $method ) );
+		$class = $namespace . str_replace( '_', '', ucwords( $method, '_' ) );
 
 		if ( ! class_exists( $class ) ) {
 			$class = $namespace . 'Base';

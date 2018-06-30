@@ -9,8 +9,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 # and get the framework set up.
 if ( ! defined( 'HYBRID_CARBON_BOOTSTRAPPED' ) ) {
 
-	require_once( trailingslashit( __DIR__ ) . 'bootstrap-autoload.php'  );
-	require_once( trailingslashit( __DIR__ ) . 'bootstrap-functions.php' );
+	require_once( __DIR__ . '/bootstrap-autoload.php'  );
+	require_once( __DIR__ . '/bootstrap-functions.php' );
 
 	define( 'HYBRID_CARBON_BOOTSTRAPPED', true );
 }

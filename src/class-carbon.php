@@ -2,43 +2,54 @@
 
 namespace Hybrid\Carbon;
 
-use Hybrid\Carbon\Image\Attachment;
+use Hybrid\Carbon\Contracts\Image as ImageContract;
+use Hybrid\Carbon\Image\Image;
 use Hybrid\Carbon\Locate\Factory;
 
 class Carbon {
 
 	/**
-	 * @var   $type   string|array
+	 * The method(s) used to locate an image.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    array|string
 	 */
 	protected $type = [];
 
-	protected $allowed_types = [
-		'featured',
-		'meta',
-		'scan',
-		'attachment'
-	];
+	/**
+	 * Array of arguments passed in.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    array
+	 */
+	protected $args = [];
 
-	protected $image;
+	/**
+	 * Image object.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    Image
+	 */
+	protected $image = null;
 
-	protected $methods = [];
-
+	/**
+	 * Creates a new Carbon object.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @param  array|string  $type
+	 * @param  array         $args
+	 */
 	public function __construct( $type = [], $args = [] ) {
 
-		$type = (array) $type;
-
-		foreach ( $type as $index => $t ) {
-
-			if ( ! in_array( $t, $this->allowed_types ) ) {
-				unset( $type[ $index ] );
-			}
-		}
-
-		$this->type = $type ?: [ 'featured' ];
+		$this->type = $type ? (array) $type : [ 'featured' ];
 
 		$defaults = [
 			'post_id'           => get_the_ID(),
-			'meta_key'          => false,
+			'meta_key'          => [ 'thumbnail', 'Thumbnail' ],
 			'size'              => has_image_size( 'post-thumbnail' ) ? 'post-thumbnail' : 'thumbnail',
 			'link'              => 'post',
 			'link_class'        => '',
@@ -61,41 +72,38 @@ class Carbon {
 		$this->build();
 	}
 
-	public function render() {
+	/**
+	 * Returns the image object.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return Image
+	 */
+	public function image() {
 
-		echo $this->fetch();
+		return $this->image;
 	}
 
-	public function fetch() {
-
-		return is_object( $this->image ) ? $this->image->fetch() : '';
-	}
-
-	public function attr() {
-
-		return is_object( $this->image ) ? $this->image->attr() : [];
-	}
-
-	public function build() {
+	/**
+	 * Builds the image object.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @return void
+	 */
+	protected function build() {
 
 		foreach ( $this->type as $method ) {
 
 			$image = Factory::make( $method, $this->args );
 
-			if ( is_object( $image ) && $image instanceof Attachment ) {
+			if ( $image instanceof ImageContract ) {
 
 				$this->image = $image;
 				return;
 			}
-
-			/*
-			if ( $image && $image->hasImage() ) {
-				$this->image = $image;
-				return;
-			}
-			*/
 		}
 
-		$this->image = null;
+		$this->image = new Image();
 	}
 }

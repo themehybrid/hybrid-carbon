@@ -2,9 +2,8 @@
 
 namespace Hybrid\Carbon\Locate\Types;
 
-use Hybrid\Carbon\Image\Attachment;
+use Hybrid\Carbon\Contracts\Image;
 use function Hybrid\Carbon\has_min_dimension;
-use function Hybrid\Carbon\is_image_attachment;
 
 class Base {
 
@@ -19,20 +18,16 @@ class Base {
 		return null;
 	}
 
-	protected function validateAttachment( $attachment_id ) {
+	protected function validate( $image ) {
 
-		$attachment_id = absint( $attachment_id );
-
-		if ( 0 >= $attachment_id || ! is_image_attachment( $attachment_id ) ) {
+		if ( ! $image || ! $image instanceof Image ) {
 			return false;
 		}
 
-		$attachment = new Attachment( $attachment_id, $this->args );
-
-		return $this->checkRequirements( $attachment ) ? $attachment : false;
+		return $this->checkRequirements( $image );
 	}
 
-	public function checkRequirements( Attachment $image ) {
+	protected function checkRequirements( Image $image ) {
 
 		if ( ! has_min_dimension( $image->width(), $this->args['min_width'] ) ) {
 			return false;
