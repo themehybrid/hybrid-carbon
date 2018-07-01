@@ -1,4 +1,17 @@
 <?php
+/**
+ * The core project class.
+ *
+ * Carbon is a highly-intuitive image script that displays post-specific images
+ * (an image-based representation of a post). This class pulls everything
+ * together and loops through the various methods for finding an image.
+ *
+ * @package   HybridCarbon
+ * @author    Justin Tadlock <justintadlock@gmail.com>
+ * @copyright Copyright (c) 2018, Justin Tadlock
+ * @link      https://github.com/justintadlock/hybrid-carbon
+ * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ */
 
 namespace Hybrid\Carbon;
 
@@ -6,6 +19,12 @@ use Hybrid\Carbon\Contracts\Image as ImageContract;
 use Hybrid\Carbon\Image\Image;
 use Hybrid\Carbon\Locate\Factory;
 
+/**
+ * Carbon core class.
+ *
+ * @since  1.0.0
+ * @access public
+ */
 class Carbon {
 
 	/**
@@ -42,6 +61,7 @@ class Carbon {
 	 * @access public
 	 * @param  array|string  $type
 	 * @param  array         $args
+	 * @return void
 	 */
 	public function __construct( $type = [], $args = [] ) {
 
@@ -51,9 +71,11 @@ class Carbon {
 			'post_id'           => get_the_ID(),
 			'meta_key'          => [ 'thumbnail', 'Thumbnail' ],
 			'size'              => has_image_size( 'post-thumbnail' ) ? 'post-thumbnail' : 'thumbnail',
-			'link'              => 'post',
+			'link'              => false,
 			'link_class'        => '',
-			'image_attr'        => [],
+			'attr'              => [],
+			'bem_block'         => 'entry',
+			'bem_element'       => 'image',
 		//	'before'            => '',
 		//	'after'             => '',
 			'min_width'         => 0,
@@ -93,9 +115,12 @@ class Carbon {
 	 */
 	protected function build() {
 
-		foreach ( $this->type as $method ) {
+		foreach ( $this->type as $type ) {
 
-			$image = Factory::make( $method, $this->args );
+			$image = Factory::make(
+				$type,
+				apply_filters( "hybrid/carbon/{$type}/args", $this->args )
+			);
 
 			if ( $image instanceof ImageContract ) {
 

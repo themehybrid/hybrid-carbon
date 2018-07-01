@@ -3,6 +3,7 @@
 namespace Hybrid\Carbon\Locate\Types;
 
 use Hybrid\Carbon\Image\Attachment;
+use Hybrid\Carbon\Image\Image;
 use function Hybrid\Carbon\is_image_attachment;
 
 class Scan extends Base {
@@ -11,6 +12,8 @@ class Scan extends Base {
 		'image',
 		'cover-image'
 	];
+
+	private $matched_sources = [];
 
 	/**
 	 * Scans the post content for an image.  It first scans and checks for an image with the
@@ -30,8 +33,7 @@ class Scan extends Base {
 
 		$methods = [
 			'scanBlocks',
-			'scanDataIds',
-			'scanIds'
+			'scanImgs'
 		];
 
 		foreach ( $methods as $method ) {
@@ -54,6 +56,18 @@ class Scan extends Base {
 
 					$image = new Attachment( $attachment_id, $this->args );
 				}
+
+				if ( $image && $this->validate( $image ) ) {
+					return $image;
+				}
+			}
+		}
+
+		if ( $this->matched_sources ) {
+
+			foreach ( $this->matched_sources as $src ) {
+
+				$image = new Image( $src + $this->args );
 
 				if ( $image && $this->validate( $image ) ) {
 					return $image;
@@ -98,16 +112,43 @@ class Scan extends Base {
 		return $image_ids;
 	}
 
-	protected function scanDataIds( $post_content ) {
+	protected function scanImgs( $post_content ) {
 
-		preg_match( '/<img.*?data-id=[\'"]([\d]*)[\'"]/i', $post_content, $image_ids );
+		$image_ids = [];
 
-		return $image_ids;
-	}
+		preg_match_all( '/<img\s(.+?)\/>/i', $post_content, $matches, PREG_PATTERN_ORDER );
 
-	protected function scanIds( $post_content ) {
+		if ( ! empty( $matches[1] ) && is_array( $matches[1] ) ) {
 
-		preg_match( '/id=[\'"]wp-image-([\d]*)[\'"]/i', $post_content, $image_ids );
+			foreach ( $matches[1] as $attr_string ) {
+
+				$atts = wp_kses_hair( $attr_string, [ 'https', 'http' ] );
+
+				if ( isset( $atts['data-id'] ) ) {
+
+					$image_ids[] = absint( $atts['data-id']['value'] );
+
+				} elseif ( isset( $atts['id'] ) && false !== strpos( $atts['id']['value'], 'wp-image-' ) ) {
+
+					$image_ids[] = absint( 'wp-image-', '', $atts['id']['value'] );
+
+				} elseif ( isset( $atts['src'] ) ) {
+
+					$img = [ 'src' => $atts['src']['value'] ];
+
+					$_atts = [ 'alt', 'width', 'height' ];
+
+					foreach ( $_atts as $_a ) {
+
+						if ( isset( $atts[ $_a ] ) ) {
+							$img[ $_a ] = $atts[ $_a ]['value'];
+						}
+					}
+
+					$this->matched_sources[] = $img;
+				}
+			}
+		}
 
 		return $image_ids;
 	}
