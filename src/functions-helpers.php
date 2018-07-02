@@ -13,6 +13,8 @@
 
 namespace Hybrid\Carbon;
 
+use Hybrid\Carbon\Contracts\Image;
+
 /**
  * Creates and returns a new `Carbon` object.
  *
@@ -34,11 +36,13 @@ function carbon( $type, $args = [] ) {
  * @access public
  * @param  array|string  $type
  * @param  array         $args
- * @return Contracts\Image
+ * @return Image|bool
  */
 function image( $type, $args = [] ) {
 
-	return carbon( $type, $args )->image();
+	$image = carbon( $type, $args )->image();
+
+	return $image instanceof Image ? $image : false;
 }
 
 /**
@@ -52,7 +56,11 @@ function image( $type, $args = [] ) {
  */
 function render_image( $type, $args = [] ) {
 
-	image( $type, $args )->render();
+	$image = image( $type, $args );
+
+	if ( $image ) {
+		$image->render();
+	}
 }
 
 /**
@@ -66,7 +74,9 @@ function render_image( $type, $args = [] ) {
  */
 function fetch_image( $type, $args = [] ) {
 
-	return image( $type, $args )->fetch();
+	$image = image( $type, $args );
+
+	return $image ? $image->fetch() : '';
 }
 
 /**
@@ -98,4 +108,29 @@ function has_min_dimension( $dimension, $required ) {
 	}
 
 	return true;
+}
+
+/**
+ * Creates a BEM-style HTML class.
+ *
+ * @since  1.0.0
+ * @access public
+ * @param  string       $block
+ * @param  string       $element
+ * @param  string|array $mod
+ * @return string
+ */
+function bem( $block, $element = '', $mod = '' ) {
+
+	$bem = $block;
+
+	if ( $element ) {
+		$bem .= "__{$element}";
+	}
+
+	if ( $mod ) {
+		$bem .= "--{$mod}";
+	}
+
+	return $bem;
 }

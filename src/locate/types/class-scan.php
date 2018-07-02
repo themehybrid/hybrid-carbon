@@ -1,11 +1,27 @@
 <?php
+/**
+ * Scan location type class.
+ *
+ * Scans the post content for image attachment IDs.
+ *
+ * @package   HybridCarbon
+ * @author    Justin Tadlock <justintadlock@gmail.com>
+ * @copyright Copyright (c) 2018, Justin Tadlock
+ * @link      https://github.com/justintadlock/hybrid-carbon
+ * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ */
 
 namespace Hybrid\Carbon\Locate\Types;
 
 use Hybrid\Carbon\Image\Attachment;
-use Hybrid\Carbon\Image\Image;
 use function Hybrid\Carbon\is_image_attachment;
 
+/**
+ * Scan location class.
+ *
+ * @since  1.0.0
+ * @access public
+ */
 class Scan extends Base {
 
 	protected $blocks = [
@@ -13,17 +29,14 @@ class Scan extends Base {
 		'cover-image'
 	];
 
-	private $matched_sources = [];
-
-	/**
-	 * Scans the post content for an image.  It first scans and checks for an image with the
-	 * "wp-image-xxx" ID.  If that exists, it'll grab the actual image attachment.  If not, it looks
-	 * for the image source.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return void
-	 */
+	 /**
+ 	 * Returns an `Image` object or `false` if no image is found.
+ 	 *
+ 	 * @since  1.0.0
+ 	 * @access protected
+ 	 * @param  array      $args
+ 	 * @return Image|bool
+ 	 */
 	public function make() {
 
 		$image_ids = [];
@@ -33,7 +46,8 @@ class Scan extends Base {
 
 		$methods = [
 			'scanBlocks',
-			'scanImgs'
+			'scanDataIds',
+			'scanIds'
 		];
 
 		foreach ( $methods as $method ) {
@@ -63,21 +77,17 @@ class Scan extends Base {
 			}
 		}
 
-		if ( $this->matched_sources ) {
-
-			foreach ( $this->matched_sources as $src ) {
-
-				$image = new Image( $src + $this->args );
-
-				if ( $image && $this->validate( $image ) ) {
-					return $image;
-				}
-			}
-		}
-
 		return parent::make();
 	}
 
+	/**
+	 * Searches for Gutenberg blocks.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @param  string    $post_content
+	 * @return array
+	 */
 	protected function scanBlocks( $post_content ) {
 
 		$this->blocks = apply_filters( 'hybrid/carbon/scan/blocks', $this->blocks );
@@ -112,43 +122,33 @@ class Scan extends Base {
 		return $image_ids;
 	}
 
-	protected function scanImgs( $post_content ) {
+	/**
+	 * Searches for `<img>` elements with `data-id` attributes. This is the
+	 * method used for Gutenberg gallery images.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @param  string    $post_content
+	 * @return array
+	 */
+	protected function scanDataIds( $post_content ) {
 
-		$image_ids = [];
+		preg_match( '/<img.*?data-id=[\'"]([\d]*)[\'"]/i', $post_content, $image_ids );
 
-		preg_match_all( '/<img\s(.+?)\/>/i', $post_content, $matches, PREG_PATTERN_ORDER );
+		return $image_ids;
+	}
 
-		if ( ! empty( $matches[1] ) && is_array( $matches[1] ) ) {
+	/**
+	 * Searches for `<img>` elements with an ID of `wp-image-{$id}`.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @param  string    $post_content
+	 * @return array
+	 */
+	protected function scanIds( $post_content ) {
 
-			foreach ( $matches[1] as $attr_string ) {
-
-				$atts = wp_kses_hair( $attr_string, [ 'https', 'http' ] );
-
-				if ( isset( $atts['data-id'] ) ) {
-
-					$image_ids[] = absint( $atts['data-id']['value'] );
-
-				} elseif ( isset( $atts['id'] ) && false !== strpos( $atts['id']['value'], 'wp-image-' ) ) {
-
-					$image_ids[] = absint( 'wp-image-', '', $atts['id']['value'] );
-
-				} elseif ( isset( $atts['src'] ) ) {
-
-					$img = [ 'src' => $atts['src']['value'] ];
-
-					$_atts = [ 'alt', 'width', 'height' ];
-
-					foreach ( $_atts as $_a ) {
-
-						if ( isset( $atts[ $_a ] ) ) {
-							$img[ $_a ] = $atts[ $_a ]['value'];
-						}
-					}
-
-					$this->matched_sources[] = $img;
-				}
-			}
-		}
+		preg_match( '/id=[\'"]wp-image-([\d]*)[\'"]/i', $post_content, $image_ids );
 
 		return $image_ids;
 	}

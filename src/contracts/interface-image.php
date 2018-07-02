@@ -14,7 +14,7 @@
 namespace Hybrid\Carbon\Contracts;
 
 /**
- * Pagination interface.
+ * Image interface.
  *
  * @since  1.0.0
  * @access public

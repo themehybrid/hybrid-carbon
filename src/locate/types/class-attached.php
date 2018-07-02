@@ -1,20 +1,36 @@
 <?php
+/**
+ * Attached location type class.
+ *
+ * Grabs the first attached image for a post and returns it.
+ *
+ * @package   HybridCarbon
+ * @author    Justin Tadlock <justintadlock@gmail.com>
+ * @copyright Copyright (c) 2018, Justin Tadlock
+ * @link      https://github.com/justintadlock/hybrid-carbon
+ * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ */
 
 namespace Hybrid\Carbon\Locate\Types;
 
 use Hybrid\Carbon\Image\Attachment;
 use function Hybrid\Carbon\is_image_attachment;
 
+/**
+ * Attached location class.
+ *
+ * @since  1.0.0
+ * @access public
+ */
 class Attached extends Base {
 
 	/**
-	 * Gets the first image attached to the post.  If the post itself is an attachment image, that will
-	 * be the image used.  This method also works with sub-attachments (images for audio/video attachments
-	 * are a good example).
+	 * Returns an `Image` object or `false` if no image is found.
 	 *
 	 * @since  1.0.0
-	 * @access public
-	 * @return void
+	 * @access protected
+	 * @param  array      $args
+	 * @return Image|bool
 	 */
 	public function make() {
 
@@ -48,6 +64,6 @@ class Attached extends Base {
 			$image = new Attachment( $attachment_id, $this->args );
 		}
 
-		return $this->validate( $image ) ? $image : parent::make();
+		return $this->validate( $image ) ? $image : false;
 	}
 }

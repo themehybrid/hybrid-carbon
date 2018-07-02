@@ -15,6 +15,7 @@
 namespace Hybrid\Carbon\Image;
 
 use Hybrid\Carbon\Contracts\Image as ImageContract;
+use function Hybrid\Carbon\bem;
 
 /**
  * Image class.
@@ -25,15 +26,6 @@ use Hybrid\Carbon\Contracts\Image as ImageContract;
 class Image implements ImageContract {
 
 	/**
-	 * Image HTML.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $html = '';
-
-	/**
 	 * Post ID.
 	 *
 	 * @since  1.0.0
@@ -41,51 +33,6 @@ class Image implements ImageContract {
 	 * @var    int
 	 */
 	protected $post_id = 0;
-
-	/**
-	 * Image source URL.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $src = '';
-
-	/**
-	 * Image width.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    int
-	 */
-	protected $width = '';
-
-	/**
-	 * Image height.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    int
-	 */
-	protected $height = '';
-
-	/**
-	 * Image alt text.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $alt = '';
-
-	/**
-	 * Image caption text.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $caption = '';
 
 	/**
 	 * Image HTML attributes.
@@ -115,8 +62,7 @@ class Image implements ImageContract {
 	protected $bem_element = 'image';
 
 	/**
-	 * Whether and what to link the image to. The image can link to `post`,
-	 * `file`, or `attachment`. Set to `false` for no link.
+	 * Whether and what to link the image to.
 	 *
 	 * @since  1.0.0
 	 * @access protected
@@ -172,29 +118,7 @@ class Image implements ImageContract {
 	 */
 	public function fetch() {
 
-		if ( ! $this->html && $this->src() ) {
-
-			$hwstring = trim( image_hwstring( $this->width(), $this->height() ) );
-
-			$esc_attr = '';
-
-			foreach ( $this->attr() as $name => $value ) {
-
-				$esc_attr .= false !== $value
-				         ? sprintf( ' %s="%s"', esc_html( $name ), esc_attr( $value ) )
-					 : esc_html( " {$name}" );
-			}
-
-			$this->html = sprintf(
-				'<img %s %s />',
-				$hwstring,
-				$esc_attr
-			);
-
-			$this->html = $this->addLink( $this->html );
-		}
-
-		return $this->html;
+		return '';
 	}
 
 	/**
@@ -242,7 +166,43 @@ class Image implements ImageContract {
 	 */
 	public function alt() {
 
-		return $this->alt;
+		return '';
+	}
+
+	/**
+	 * Returns the image attributes.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return string
+	 */
+	protected function attr() {
+
+		return array_merge( [
+			'src'   => $this->src(),
+			'alt'   => $this->alt(),
+			'class' => join( ' ', $this->class() )
+		] + $this->attr );
+	}
+
+	/**
+	 * Returns the image element class.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @return array
+	 */
+	protected function class() {
+
+		$class = [];
+
+		$class[] = bem( $this->bem_block, $this->bem_element );
+
+		if ( $o = $this->orientation() ) {
+			$class[] = bem( $this->bem_block, $this->bem_element, "orientation-{$o}" );
+		}
+
+		return $class;
 	}
 
 	/**
@@ -254,7 +214,7 @@ class Image implements ImageContract {
 	 */
 	public function caption() {
 
-		return $this->caption;
+		return '';
 	}
 
 	/**
@@ -278,63 +238,6 @@ class Image implements ImageContract {
 	}
 
 	/**
-	 * Returns the image source value.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return string
-	 */
-	public function attr() {
-
-		return array_merge( [
-			'src'   => $this->src(),
-			'class' => join( ' ', $this->class() ),
-			'alt'   => $this->alt()
-		] + $this->attr );
-	}
-
-	/**
-	 * Returns the image element class.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @return array
-	 */
-	protected function class() {
-
-		$class = [ $this->bem() ];
-
-		if ( $o = $this->orientation() ) {
-			$class[] = $this->bem( "orientation-{$o}" );
-		}
-
-		return $class;
-	}
-
-	/**
-	 * Creates a BEM-style HTML class.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @param  string    $mod
-	 * @return string
-	 */
-	protected function bem( $mod = '' ) {
-
-		$bem = $this->bem_block;
-
-		if ( $this->bem_element ) {
-			$bem = "{$bem}__{$this->bem_element}";
-		}
-
-		if ( $mod ) {
-			$bem = "{$bem}--{$mod}";
-		}
-
-		return $bem;
-	}
-
-	/**
 	 * Wraps the image HTML with a link.
 	 *
 	 * @since  1.0.0
@@ -348,7 +251,7 @@ class Image implements ImageContract {
 
 			$url = get_permalink( $this->post_id );
 
-			$class = $this->link_class ?: sprintf( '%s-link', $this->bem() );
+			$class = $this->link_class ?: sprintf( '%s-link', bem( $this->bem_block, $this->bem_element ) );
 
 			$html = sprintf(
 				'<a href="%s" class="%s">%s</a>',

@@ -15,9 +15,11 @@
 
 namespace Hybrid\Carbon;
 
-use Hybrid\Carbon\Contracts\Image as ImageContract;
-use Hybrid\Carbon\Image\Image;
-use Hybrid\Carbon\Locate\Factory;
+use Hybrid\Carbon\Contracts\Image;
+use Hybrid\Carbon\Locate\Types\Attached;
+use Hybrid\Carbon\Locate\Types\Featured;
+use Hybrid\Carbon\Locate\Types\Meta;
+use Hybrid\Carbon\Locate\Types\Scan;
 
 /**
  * Carbon core class.
@@ -28,13 +30,23 @@ use Hybrid\Carbon\Locate\Factory;
 class Carbon {
 
 	/**
-	 * The method(s) used to locate an image.
+	 * The methods used to locate an image.
 	 *
 	 * @since  1.0.0
 	 * @access protected
-	 * @var    array|string
+	 * @var    array
 	 */
 	protected $type = [];
+
+	/**
+	 * Array of registered types. Key is the type name and value is the class
+	 * to be called.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    array
+	 */
+	protected $registered_types = [];
 
 	/**
 	 * Array of arguments passed in.
@@ -80,16 +92,21 @@ class Carbon {
 		//	'after'             => '',
 			'min_width'         => 0,
 			'min_height'        => 0,
-		//	'caption'           => false,
-		//	'meta_key_save'     => false,
-		//	'thumbnail_id_save' => false,
-		//	'cache'             => true
+		//	'caption'           => false
 		];
 
 		$this->args = wp_parse_args( $args, $defaults );
 
 		// Compatibility with the core WP `post_thumbnail_size` hook.
 		$this->args['size'] = apply_filters( 'post_thumbnail_size', $this->args['size'] );
+
+		// Types to locate image.
+		$this->registered_types = apply_filters( 'hybrid/carbon/types', [
+			'attached' => Attached::class,
+			'featured' => Featured::class,
+			'meta'     => Meta::class,
+			'scan'     => Scan::class
+		] );
 
 		$this->build();
 	}
@@ -117,18 +134,23 @@ class Carbon {
 
 		foreach ( $this->type as $type ) {
 
-			$image = Factory::make(
-				$type,
-				apply_filters( "hybrid/carbon/{$type}/args", $this->args )
-			);
+			$class = isset( $this->registered_types[ $type ] )
+			         ? $this->registered_types[ $type ]
+				 : '';
 
-			if ( $image instanceof ImageContract ) {
+			if ( $class ) {
 
-				$this->image = $image;
-				return;
+				$args = apply_filters( "hybrid/carbon/{$type}/args", $this->args );
+
+				$locate = new $class( $args );
+
+				$image = $locate->make();
+
+				if ( $image instanceof Image ) {
+					$this->image = $image;
+					return;
+				}
 			}
 		}
-
-		$this->image = new Image();
 	}
 }

@@ -14,6 +14,8 @@
 
 namespace Hybrid\Carbon\Image;
 
+use function Hybrid\Carbon\bem;
+
 /**
  * Attachment image class.
  *
@@ -75,40 +77,16 @@ class Attachment extends Image {
 	 */
 	public function fetch() {
 
-		if ( ! $this->html ) {
+		$html = wp_get_attachment_image(
+			$this->attachment_id,
+			$this->size,
+			false,
+			$this->attr()
+		);
 
-			$attr = $this->attr();
+		return $this->addLink( $html );
 
-			// Core WP will use `image_hwstring()` to handle this.
-			unset( $attr['width'], $attr['height'] );
-
-			$this->html = wp_get_attachment_image(
-				$this->attachment_id,
-				$this->size,
-				false,
-				$attr
-			);
-
-			$this->html = $this->addLink( $this->html );
-		}
-
-		return $this->html;
-	}
-
-	/**
-	 * Returns the image element class.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @return array
-	 */
-	protected function class() {
-
-		$class = parent::class();
-
-		$class[] = $this->bem( "size-{$this->size}" );
-
-		return $class;
+		// @todo $this->addCaption()
 	}
 
 	/**
@@ -123,6 +101,38 @@ class Attachment extends Image {
 		$alt = get_post_meta( $this->attachment_id, '_wp_attachment_image_alt', true );
 
 		return trim( strip_tags( $alt ) );
+	}
+
+	/**
+	 * Returns the image attributes. Most of these are going to be handled
+	 * automatically via `wp_get_attachment_image()`, so we're not worried
+	 * about getting the necessary attributes.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return string
+	 */
+	protected function attr() {
+
+		return array_merge( [
+			'class' => join( ' ', $this->class() )
+		] + $this->attr );
+	}
+
+	/**
+	 * Returns the image element class.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @return array
+	 */
+	protected function class() {
+
+		$class = parent::class();
+
+		$class[] = bem( $this->bem_block, $this->bem_element, "size-{$this->size}" );
+
+		return $class;
 	}
 
 	/**

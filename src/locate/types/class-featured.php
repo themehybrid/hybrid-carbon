@@ -1,12 +1,37 @@
 <?php
+/**
+ * Featured location type class.
+ *
+ * Searches for and returns a featured image if the post has one.
+ *
+ * @package   HybridCarbon
+ * @author    Justin Tadlock <justintadlock@gmail.com>
+ * @copyright Copyright (c) 2018, Justin Tadlock
+ * @link      https://github.com/justintadlock/hybrid-carbon
+ * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ */
 
 namespace Hybrid\Carbon\Locate\Types;
 
 use Hybrid\Carbon\Image\Attachment;
 use function Hybrid\Carbon\is_image_attachment;
 
+/**
+ * Featured location class.
+ *
+ * @since  1.0.0
+ * @access public
+ */
 class Featured extends Base {
 
+	/**
+	 * Returns an `Image` object or `false` if no image is found.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @param  array      $args
+	 * @return Image|bool
+	 */
 	public function make() {
 
 		$image = '';
@@ -19,6 +44,6 @@ class Featured extends Base {
 			$image = new Attachment( $attachment_id, $this->args );
 		}
 
-		return $this->validate( $image ) ? $image : parent::make();
+		return $this->validate( $image ) ? $image : false;
 	}
 }
