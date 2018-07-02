@@ -77,7 +77,7 @@ class Scan extends Base {
 			}
 		}
 
-		return parent::make();
+		return false;
 	}
 
 	/**
