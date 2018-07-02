@@ -2,6 +2,8 @@
 
 Post featured image script with magical properties.
 
+This is a refresh of the original [Get the Image](https://github.com/justintadlock/get-the-image) project to make it more suitable for including in both plugins and themes as a drop-in package.  It's also a way to shed some of the 10+ years of baggage from the original plugin.
+
 ## Usage
 
 _Please note that this is currently under heavy development and could change drastically._
