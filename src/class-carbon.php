@@ -88,8 +88,8 @@ class Carbon {
 			'attr'              => [],
 			'bem_block'         => 'entry',
 			'bem_element'       => 'image',
-		//	'before'            => '',
-		//	'after'             => '',
+			'before'            => '',
+			'after'             => '',
 			'min_width'         => 0,
 			'min_height'        => 0,
 			'caption'           => false

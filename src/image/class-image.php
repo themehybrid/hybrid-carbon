@@ -89,6 +89,24 @@ class Image implements ImageContract {
 	protected $caption = false;
 
 	/**
+	 * HTML to add before image.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    string
+	 */
+	protected $before = '';
+
+	/**
+	 * HTML to add after image.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    string
+	 */
+	protected $after = '';
+
+	/**
 	 * Creates a new Image object.
 	 *
 	 * @since  1.0.0
@@ -244,6 +262,22 @@ class Image implements ImageContract {
 		}
 
 		return '';
+	}
+
+	/**
+	 * Wraps the image with HTML wrappers.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @param  string  $html
+	 * @return string
+	 */
+	protected function wrap( $html ) {
+
+		$html = $this->addLink( $html );
+		$html = $this->addCaption( $html );
+
+		return $this->before . $html . $this->after;
 	}
 
 	/**
