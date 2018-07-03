@@ -92,7 +92,7 @@ class Carbon {
 		//	'after'             => '',
 			'min_width'         => 0,
 			'min_height'        => 0,
-		//	'caption'           => false
+			'caption'           => false
 		];
 
 		$this->args = wp_parse_args( $args, $defaults );

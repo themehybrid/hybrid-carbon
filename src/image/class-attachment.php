@@ -84,9 +84,9 @@ class Attachment extends Image {
 			$this->attr()
 		);
 
-		return $this->addLink( $html );
+		$html = $this->addLink( $html );
 
-		// @todo $this->addCaption()
+		return $this->addCaption( $html );
 	}
 
 	/**

@@ -80,6 +80,15 @@ class Image implements ImageContract {
 	protected $link_class = '';
 
 	/**
+	 * Whether to add a caption (if one exists) to the image.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    bool
+	 */
+	protected $caption = false;
+
+	/**
 	 * Creates a new Image object.
 	 *
 	 * @since  1.0.0
@@ -259,6 +268,27 @@ class Image implements ImageContract {
 				esc_attr( $class ),
 				$html
 			);
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Wraps the image HTML with a caption.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @param  string  $html
+	 * @return string
+	 */
+	protected function addCaption( $html ) {
+
+		if ( $this->caption && $caption = $this->caption() ) {
+
+			$html = img_caption_shortcode( [
+				'caption' => $caption,
+				'width'   => $this->width()
+			], $html );
 		}
 
 		return $html;

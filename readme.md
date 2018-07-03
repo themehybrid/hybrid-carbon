@@ -98,6 +98,7 @@ The `$args` parameter is an optional array of arguments to customize the image.
 * `min_width` - Minimum width required of the image.
 * `min_height` - Minimum height required of the image.
 * `attr` - Array of image attributes.
+* `caption` - Whether to include captions for images that have them (defaults to `false`).
 
 ### Functions
 
