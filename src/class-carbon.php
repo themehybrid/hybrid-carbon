@@ -107,8 +107,6 @@ class Carbon {
 			'meta'     => Meta::class,
 			'scan'     => Scan::class
 		] );
-
-		$this->build();
 	}
 
 	/**
@@ -120,6 +118,8 @@ class Carbon {
 	 */
 	public function image() {
 
+		$this->make();
+
 		return $this->image;
 	}
 
@@ -130,7 +130,7 @@ class Carbon {
 	 * @access protected
 	 * @return void
 	 */
-	protected function build() {
+	protected function make() {
 
 		foreach ( $this->type as $type ) {
 
