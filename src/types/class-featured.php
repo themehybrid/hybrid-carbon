@@ -11,7 +11,7 @@
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-namespace Hybrid\Carbon\Locate\Types;
+namespace Hybrid\Carbon\Types;
 
 use Hybrid\Carbon\Image\Attachment;
 use function Hybrid\Carbon\is_image_attachment;

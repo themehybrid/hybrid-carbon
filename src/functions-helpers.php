@@ -14,6 +14,7 @@
 namespace Hybrid\Carbon;
 
 use Hybrid\Carbon\Contracts\Image;
+use Hybrid\Carbon\Core\Carbon;
 
 /**
  * Creates and returns a new `Carbon` object.

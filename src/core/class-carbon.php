@@ -13,13 +13,15 @@
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-namespace Hybrid\Carbon;
+namespace Hybrid\Carbon\Core;
 
+use Hybrid\Carbon\Contracts\Carbon as CarbonContract;
 use Hybrid\Carbon\Contracts\Image;
-use Hybrid\Carbon\Locate\Types\Attached;
-use Hybrid\Carbon\Locate\Types\Featured;
-use Hybrid\Carbon\Locate\Types\Meta;
-use Hybrid\Carbon\Locate\Types\Scan;
+use Hybrid\Carbon\Contracts\Type;
+use Hybrid\Carbon\Types\Attached;
+use Hybrid\Carbon\Types\Featured;
+use Hybrid\Carbon\Types\Meta;
+use Hybrid\Carbon\Types\Scan;
 
 /**
  * Carbon core class.
@@ -27,7 +29,7 @@ use Hybrid\Carbon\Locate\Types\Scan;
  * @since  1.0.0
  * @access public
  */
-class Carbon {
+class Carbon implements CarbonContract {
 
 	/**
 	 * The methods used to locate an image.
@@ -100,7 +102,8 @@ class Carbon {
 		// Compatibility with the core WP `post_thumbnail_size` hook.
 		$this->args['size'] = apply_filters( 'post_thumbnail_size', $this->args['size'] );
 
-		// Types to locate image.
+		// Types to locate image. Custom types must implement the `Type`
+		// contract to work.
 		$this->registered_types = apply_filters( 'hybrid/carbon/types', [
 			'attached' => Attached::class,
 			'featured' => Featured::class,
@@ -144,8 +147,15 @@ class Carbon {
 
 				$locate = new $class( $args );
 
+				// Bail if we do not have a `Type` contract.
+				if ( ! $locate instanceof Type ) {
+					continue;
+				}
+
+				// Attempt to make an image.
 				$image = $locate->make();
 
+				// Set the image if it implements the `Image` contract.
 				if ( $image instanceof Image ) {
 					$this->image = $image;
 					return;

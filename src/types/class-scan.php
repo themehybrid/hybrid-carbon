@@ -11,7 +11,7 @@
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-namespace Hybrid\Carbon\Locate\Types;
+namespace Hybrid\Carbon\Types;
 
 use Hybrid\Carbon\Image\Attachment;
 use function Hybrid\Carbon\is_image_attachment;
@@ -24,6 +24,14 @@ use function Hybrid\Carbon\is_image_attachment;
  */
 class Scan extends Base {
 
+	/**
+	 * Array of WP 5.0+ (Gutenberg) block names to search for an image ID
+	 * from with its JSON string.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    array
+	 */
 	protected $blocks = [
 		'image',
 		'cover-image'

@@ -12,9 +12,10 @@
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-namespace Hybrid\Carbon\Locate\Types;
+namespace Hybrid\Carbon\Types;
 
 use Hybrid\Carbon\Contracts\Image;
+use Hybrid\Carbon\Contracts\Type;
 use function Hybrid\Carbon\has_min_dimension;
 
 /**
@@ -23,7 +24,7 @@ use function Hybrid\Carbon\has_min_dimension;
  * @since  1.0.0
  * @access public
  */
-abstract class Base {
+abstract class Base implements Type {
 
 	/**
 	 * Array of arguments passed in.
