@@ -52,18 +52,18 @@ if ( file_exists( get_parent_theme_file_path( 'vendor/autoload.php' ) ) ) {
 
 ### Usage
 
-Hybrid Carbon has a few functions, but the primary function that you'll want to use is `render_image()`.  You'll need to replace any calls to `the_post_thumbnail()` with this function like so:
+Hybrid Carbon has a few functions, but the primary function that you'll want to use is `render()`.  You'll need to replace any calls to `the_post_thumbnail()` with this function like so:
 
 ```
-<?php Hybrid\Carbon\render_image( $type, $args = [] ) ?>
+<?php Hybrid\Carbon\render( $type, $args = [] ) ?>
 ```
 
-_Note that the plugin's namespace is `Hybrid\Carbon`.  If you're working within another namespace, you'll want to add a `use` statement after your own namespace call or call `\Hybrid\Carbon\render_image()` directly.  I'll assume you know what you're doing if you're working with namespaces.  Otherwise, stick to the above._
+_Note that the plugin's namespace is `Hybrid\Carbon`.  If you're working within another namespace, you'll want to add a `use` statement after your own namespace call or call `\Hybrid\Carbon\render()` directly.  I'll assume you know what you're doing if you're working with namespaces.  Otherwise, stick to the above._
 
 The most basic call will look like the following.
 
 ```
-<?php Hybrid\Carbon\render_image( 'featured', [
+<?php Hybrid\Carbon\render( 'featured', [
 	'size' => 'post-thumbnail',
 	'link' => 'post'
 ] ) ?>
@@ -114,8 +114,8 @@ carbon( $type, $args = [] );
 image( $type, $args = [] );
 
 // Renders the HTML output of the found Image object if one is found.
-render_image( $type, $args = [] );
+render( $type, $args = [] );
 
 // Returns the HTML string of the found Image object or an empty string.
-fetch_image( $type, $args = [] );
+fetch( $type, $args = [] );
 ```

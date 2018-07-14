@@ -55,7 +55,7 @@ function image( $type, $args = [] ) {
  * @param  array         $args
  * @return void
  */
-function render_image( $type, $args = [] ) {
+function render( $type, $args = [] ) {
 
 	$image = image( $type, $args );
 
@@ -73,7 +73,7 @@ function render_image( $type, $args = [] ) {
  * @param  array         $args
  * @return string
  */
-function fetch_image( $type, $args = [] ) {
+function fetch( $type, $args = [] ) {
 
 	$image = image( $type, $args );
 
