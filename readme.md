@@ -108,14 +108,14 @@ All of the primary functions you might use follow the same parameter pattern.  O
 
 ```
 // Returns an instance of the Carbon class.
-carbon( $type, $args = [] );
+carbon( $type, array $args = [] );
 
 // Returns an instance of the found Image object or false.
-image( $type, $args = [] );
+image( $type, array $args = [] );
 
 // Renders the HTML output of the found Image object if one is found.
-render( $type, $args = [] );
+render( $type, array $args = [] );
 
 // Returns the HTML string of the found Image object or an empty string.
-fetch( $type, $args = [] );
+fetch( $type, array $args = [] );
 ```

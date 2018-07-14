@@ -25,7 +25,7 @@ use Hybrid\Carbon\Core\Carbon;
  * @param  array         $args
  * @return Carbon
  */
-function carbon( $type, $args = [] ) {
+function carbon( $type, array $args = [] ) {
 
 	return new Carbon( $type, $args );
 }
@@ -39,7 +39,7 @@ function carbon( $type, $args = [] ) {
  * @param  array         $args
  * @return Image|bool
  */
-function image( $type, $args = [] ) {
+function image( $type, array $args = [] ) {
 
 	$image = carbon( $type, $args )->image();
 
@@ -55,7 +55,7 @@ function image( $type, $args = [] ) {
  * @param  array         $args
  * @return void
  */
-function render( $type, $args = [] ) {
+function render( $type, array $args = [] ) {
 
 	$image = image( $type, $args );
 
@@ -73,7 +73,7 @@ function render( $type, $args = [] ) {
  * @param  array         $args
  * @return string
  */
-function fetch( $type, $args = [] ) {
+function fetch( $type, array $args = [] ) {
 
 	$image = image( $type, $args );
 
