@@ -114,7 +114,7 @@ class Image implements ImageContract {
 	 * @param  array  $args
 	 * @return void
 	 */
-	public function __construct( $args = [] ) {
+	public function __construct( array $args = [] ) {
 
 		foreach ( array_keys( get_object_vars( $this ) ) as $key ) {
 

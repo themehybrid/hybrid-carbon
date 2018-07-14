@@ -1,8 +1,8 @@
 <?php
 /**
- * Breadcrumbs interface.
+ * Image grabber contract.
  *
- * Defines the interface that breadcrumbs classes must use.
+ * Defines a contract for a class that grabs an image.
  *
  * @package   HybridBreadcrumbs
  * @author    Justin Tadlock <justintadlock@gmail.com>
@@ -14,12 +14,21 @@
 namespace Hybrid\Carbon\Contracts;
 
 /**
- * Carbon interface.
+ * Image grabber interface.
  *
  * @since  1.0.0
  * @access public
  */
-interface Carbon {
+interface ImageGrabber {
+
+	/**
+	 * Builds or finds an image object.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return ImageGrabber
+	 */
+	public function make();
 
 	/**
 	 * Returns an object implementing the `Image` contract.

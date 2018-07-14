@@ -51,7 +51,7 @@ class Attachment extends Image {
 	 * @param  array  $args
 	 * @return void
 	 */
-	public function __construct( $attachment_id, $args = [] ) {
+	public function __construct( $attachment_id, array $args = [] ) {
 
 		parent::__construct( $args );
 

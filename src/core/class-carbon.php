@@ -15,8 +15,8 @@
 
 namespace Hybrid\Carbon\Core;
 
-use Hybrid\Carbon\Contracts\Carbon as CarbonContract;
 use Hybrid\Carbon\Contracts\Image;
+use Hybrid\Carbon\Contracts\ImageGrabber;
 use Hybrid\Carbon\Contracts\Type;
 use Hybrid\Carbon\Types\Attached;
 use Hybrid\Carbon\Types\Featured;
@@ -29,7 +29,7 @@ use Hybrid\Carbon\Types\Scan;
  * @since  1.0.0
  * @access public
  */
-class Carbon implements CarbonContract {
+class Carbon implements ImageGrabber {
 
 	/**
 	 * The methods used to locate an image.
@@ -77,11 +77,9 @@ class Carbon implements CarbonContract {
 	 * @param  array         $args
 	 * @return void
 	 */
-	public function __construct( $type = [], $args = [] ) {
+	public function __construct( $type = [], array $args = [] ) {
 
-		$this->type = $type ? (array) $type : [ 'featured' ];
-
-		$defaults = [
+		$this->args = wp_parse_args( $args, [
 			'post_id'           => get_the_ID(),
 			'meta_key'          => [ 'thumbnail', 'Thumbnail' ],
 			'size'              => has_image_size( 'post-thumbnail' ) ? 'post-thumbnail' : 'thumbnail',
@@ -95,9 +93,7 @@ class Carbon implements CarbonContract {
 			'min_width'         => 0,
 			'min_height'        => 0,
 			'caption'           => false
-		];
-
-		$this->args = wp_parse_args( $args, $defaults );
+		] );
 
 		// Compatibility with the core WP `post_thumbnail_size` hook.
 		$this->args['size'] = apply_filters( 'post_thumbnail_size', $this->args['size'] );
@@ -110,6 +106,54 @@ class Carbon implements CarbonContract {
 			'meta'     => Meta::class,
 			'scan'     => Scan::class
 		] );
+
+		// Get the type(s) of image location methods.
+		$this->type = $type ? (array) $type : [ 'featured' ];
+
+		// If a type is not registered, remove it.
+		foreach ( $this->type as $key => $value ) {
+
+			if ( ! isset( $this->registered_types[ $value ] ) ) {
+				unset( $this->type[ $key ] );
+			}
+		}
+	}
+
+	/**
+	 * Builds the image object.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @return ImageGrabber
+	 */
+	public function make() {
+
+		foreach ( $this->type as $type ) {
+
+			$args = apply_filters( "hybrid/carbon/{$type}/args", $this->args );
+
+			// Get the registered type class and create a new instance.
+			$class = $this->registered_types[ $type ];
+
+			$locate = new $class( $args );
+
+			// Bail if we do not have a `Type` contract.
+			if ( ! $locate instanceof Type ) {
+				continue;
+			}
+
+			// Attempt to make an image.
+			$image = $locate->make();
+
+			// Set the image if it implements the `Image` contract.
+			if ( $image instanceof Image ) {
+				$this->image = $image;
+				break;
+			}
+		}
+
+		// Return the object for chaining.
+		return $this;
 	}
 
 	/**
@@ -121,46 +165,6 @@ class Carbon implements CarbonContract {
 	 */
 	public function image() {
 
-		$this->make();
-
 		return $this->image;
-	}
-
-	/**
-	 * Builds the image object.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @return void
-	 */
-	protected function make() {
-
-		foreach ( $this->type as $type ) {
-
-			$class = isset( $this->registered_types[ $type ] )
-			         ? $this->registered_types[ $type ]
-				 : '';
-
-			if ( $class ) {
-
-				$args = apply_filters( "hybrid/carbon/{$type}/args", $this->args );
-
-				$locate = new $class( $args );
-
-				// Bail if we do not have a `Type` contract.
-				if ( ! $locate instanceof Type ) {
-					continue;
-				}
-
-				// Attempt to make an image.
-				$image = $locate->make();
-
-				// Set the image if it implements the `Image` contract.
-				if ( $image instanceof Image ) {
-					$this->image = $image;
-					return;
-				}
-			}
-		}
 	}
 }

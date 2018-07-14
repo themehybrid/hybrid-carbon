@@ -17,7 +17,7 @@ use Hybrid\Carbon\Contracts\Image;
 use Hybrid\Carbon\Core\Carbon;
 
 /**
- * Creates and returns a new `Carbon` object.
+ * Creates and returns a new `Carbon` object and runs its `make()` method.
  *
  * @since  1.0.0
  * @access public
@@ -27,7 +27,7 @@ use Hybrid\Carbon\Core\Carbon;
  */
 function carbon( $type, array $args = [] ) {
 
-	return new Carbon( $type, $args );
+	return ( new Carbon( $type, $args ) )->make();
 }
 
 /**
