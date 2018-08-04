@@ -106,9 +106,9 @@ The `$args` parameter is an optional array of arguments to customize the image.
 
 All of the primary functions you might use follow the same parameter pattern.  Of course, all of these functions are under the `Hybrid\Carbon` namespace.
 
-```
+```php
 // Returns an instance of the Carbon class.
-carbon( $type, array $args = [] );
+make( $type, array $args = [] );
 
 // Returns an instance of the found Image object or false.
 image( $type, array $args = [] );
@@ -118,4 +118,22 @@ render( $type, array $args = [] );
 
 // Returns the HTML string of the found Image object or an empty string.
 fetch( $type, array $args = [] );
+```
+
+### Static helper class
+
+If you'd rather work with a static class than the above functions, `Hybrid\Carbon\Util\Grabber` is also available.
+
+```php
+// Returns an instance of the Carbon class.
+Grabber::make( $type, array $args = [] );
+
+// Returns an instance of the found Image object or false.
+Grabber::image( $type, array $args = [] );
+
+// Renders the HTML output of the found Image object if one is found.
+Grabber::render( $type, array $args = [] );
+
+// Returns the HTML string of the found Image object or an empty string.
+Grabber::fetch( $type, array $args = [] );
 ```
