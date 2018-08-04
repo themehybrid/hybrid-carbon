@@ -13,8 +13,7 @@
 
 namespace Hybrid\Carbon;
 
-use Hybrid\Carbon\Contracts\Image;
-use Hybrid\Carbon\Core\Carbon;
+use Hybrid\Carbon\Util\Grabber;
 
 /**
  * Creates and returns a new `Carbon` object and runs its `make()` method.
@@ -23,11 +22,11 @@ use Hybrid\Carbon\Core\Carbon;
  * @access public
  * @param  array|string  $type
  * @param  array         $args
- * @return Carbon
+ * @return \Hybrid\Carbon\Contracts\ImageGrabber
  */
-function carbon( $type, array $args = [] ) {
+function make( $type, array $args = [] ) {
 
-	return ( new Carbon( $type, $args ) )->make();
+	return Grabber::make( $type, $args );
 }
 
 /**
@@ -37,13 +36,11 @@ function carbon( $type, array $args = [] ) {
  * @access public
  * @param  array|string  $type
  * @param  array         $args
- * @return Image|bool
+ * @return \Hybrid\Carbon\Contracts\Image|bool
  */
 function image( $type, array $args = [] ) {
 
-	$image = carbon( $type, $args )->image();
-
-	return $image instanceof Image ? $image : false;
+	return Grabber::image( $type, $args );
 }
 
 /**
@@ -57,11 +54,7 @@ function image( $type, array $args = [] ) {
  */
 function render( $type, array $args = [] ) {
 
-	$image = image( $type, $args );
-
-	if ( $image ) {
-		$image->render();
-	}
+	Grabber::render( $type, $args );
 }
 
 /**
@@ -75,7 +68,5 @@ function render( $type, array $args = [] ) {
  */
 function fetch( $type, array $args = [] ) {
 
-	$image = image( $type, $args );
-
-	return $image ? $image->fetch() : '';
+	return Grabber::fetch( $type, $args );
 }
