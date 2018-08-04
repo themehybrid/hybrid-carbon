@@ -14,7 +14,7 @@
 
 namespace Hybrid\Carbon\Image;
 
-use function Hybrid\Carbon\bem;
+use Hybrid\Carbon\Util\Helpers;
 
 /**
  * Attachment image class.
@@ -128,7 +128,7 @@ class Attachment extends Image {
 
 		$class = parent::class();
 
-		$class[] = bem( $this->bem_block, $this->bem_element, "size-{$this->size}" );
+		$class[] = Helpers::bem( $this->bem_block, $this->bem_element, "size-{$this->size}" );
 
 		return $class;
 	}

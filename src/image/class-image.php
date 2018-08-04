@@ -15,7 +15,7 @@
 namespace Hybrid\Carbon\Image;
 
 use Hybrid\Carbon\Contracts\Image as ImageContract;
-use function Hybrid\Carbon\bem;
+use Hybrid\Carbon\Util\Helpers;
 
 /**
  * Image class.
@@ -223,10 +223,10 @@ class Image implements ImageContract {
 
 		$class = [];
 
-		$class[] = bem( $this->bem_block, $this->bem_element );
+		$class[] = Helpers::bem( $this->bem_block, $this->bem_element );
 
 		if ( $o = $this->orientation() ) {
-			$class[] = bem( $this->bem_block, $this->bem_element, "orientation-{$o}" );
+			$class[] = Helpers::bem( $this->bem_block, $this->bem_element, "orientation-{$o}" );
 		}
 
 		return $class;
@@ -294,7 +294,7 @@ class Image implements ImageContract {
 
 			$url = get_permalink( $this->post_id );
 
-			$class = $this->link_class ?: sprintf( '%s-link', bem( $this->bem_block, $this->bem_element ) );
+			$class = $this->link_class ?: sprintf( '%s-link', Helpers::bem( $this->bem_block, $this->bem_element ) );
 
 			$html = sprintf(
 				'<a href="%s" class="%s">%s</a>',

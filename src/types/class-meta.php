@@ -14,7 +14,7 @@
 namespace Hybrid\Carbon\Types;
 
 use Hybrid\Carbon\Image\Attachment;
-use function Hybrid\Carbon\is_image_attachment;
+use Hybrid\Carbon\Util\Helpers;
 
 /**
  * Meta location class.
@@ -40,7 +40,7 @@ class Meta extends Base {
 
 			$meta_value = get_post_meta( $this->args['post_id'], $meta_key, true );
 
-			if ( $meta_value && is_numeric( $meta_value ) && is_image_attachment( $meta_value ) ) {
+			if ( $meta_value && is_numeric( $meta_value ) && Helpers::isImageAttachment( $meta_value ) ) {
 
 				$image = new Attachment( $meta_value, $this->args );
 

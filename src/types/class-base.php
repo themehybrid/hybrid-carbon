@@ -16,7 +16,7 @@ namespace Hybrid\Carbon\Types;
 
 use Hybrid\Carbon\Contracts\Image;
 use Hybrid\Carbon\Contracts\Type;
-use function Hybrid\Carbon\has_min_dimension;
+use Hybrid\Carbon\Util\Helpers;
 
 /**
  * Base location class.
@@ -85,11 +85,11 @@ abstract class Base implements Type {
 	 */
 	protected function checkRequirements( Image $image ) {
 
-		if ( ! has_min_dimension( $image->width(), $this->args['min_width'] ) ) {
+		if ( ! Helpers::hasMinDimension( $image->width(), $this->args['min_width'] ) ) {
 			return false;
 		}
 
-		if ( ! has_min_dimension( $image->height(), $this->args['min_height'] ) ) {
+		if ( ! Helpers::hasMinDimension( $image->height(), $this->args['min_height'] ) ) {
 			return false;
 		}
 

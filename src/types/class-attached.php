@@ -14,7 +14,7 @@
 namespace Hybrid\Carbon\Types;
 
 use Hybrid\Carbon\Image\Attachment;
-use function Hybrid\Carbon\is_image_attachment;
+use Hybrid\Carbon\Util\Helpers;
 
 /**
  * Attached location class.
@@ -37,7 +37,7 @@ class Attached extends Base {
 		$image         = '';
 		$attachment_id = 0;
 
-		if ( is_image_attachment( $this->args['post_id'] ) ) {
+		if ( Helpers::isImageAttachment( $this->args['post_id'] ) ) {
 
 			$attachment_id = $this->args['post_id'];
 		} else {
@@ -59,7 +59,7 @@ class Attached extends Base {
 			}
 		}
 
-		if ( 0 < $attachment_id && is_image_attachment( $attachment_id ) ) {
+		if ( 0 < $attachment_id && Helpers::isImageAttachment( $attachment_id ) ) {
 
 			$image = new Attachment( $attachment_id, $this->args );
 		}

@@ -14,7 +14,7 @@
 namespace Hybrid\Carbon\Types;
 
 use Hybrid\Carbon\Image\Attachment;
-use function Hybrid\Carbon\is_image_attachment;
+use Hybrid\Carbon\Util\Helpers;
 
 /**
  * Scan location class.
@@ -74,7 +74,7 @@ class Scan extends Base {
 
 				$image = '';
 
-				if ( 0 < $attachment_id && is_image_attachment( $attachment_id ) ) {
+				if ( 0 < $attachment_id && Helpers::isImageAttachment( $attachment_id ) ) {
 
 					$image = new Attachment( $attachment_id, $this->args );
 				}
