@@ -52,9 +52,9 @@ function image( $type, array $args = [] ) {
  * @param  array         $args
  * @return void
  */
-function render( $type, array $args = [] ) {
+function display( $type, array $args = [] ) {
 
-	Grabber::render( $type, $args );
+	Grabber::display( $type, $args );
 }
 
 /**

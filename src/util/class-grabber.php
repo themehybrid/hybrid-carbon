@@ -63,12 +63,12 @@ class Grabber {
 	 * @param  array         $args
 	 * @return void
 	 */
-	public static function render( $type, array $args = [] ) {
+	public static function display( $type, array $args = [] ) {
 
 		$image = static::image( $type, $args );
 
 		if ( $image ) {
-			$image->render();
+			$image->display();
 		}
 	}
 

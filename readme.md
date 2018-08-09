@@ -52,18 +52,18 @@ if ( file_exists( get_parent_theme_file_path( 'vendor/autoload.php' ) ) ) {
 
 ### Usage
 
-Hybrid Carbon has a few functions, but the primary function that you'll want to use is `render()`.  You'll need to replace any calls to `the_post_thumbnail()` with this function like so:
+Hybrid Carbon has a few functions, but the primary function that you'll want to use is `display()`.  You'll need to replace any calls to `the_post_thumbnail()` with this function like so:
 
 ```
-<?php Hybrid\Carbon\render( $type, $args = [] ) ?>
+<?php Hybrid\Carbon\display( $type, $args = [] ) ?>
 ```
 
-_Note that the plugin's namespace is `Hybrid\Carbon`.  If you're working within another namespace, you'll want to add a `use` statement after your own namespace call or call `\Hybrid\Carbon\render()` directly.  I'll assume you know what you're doing if you're working with namespaces.  Otherwise, stick to the above._
+_Note that the plugin's namespace is `Hybrid\Carbon`.  If you're working within another namespace, you'll want to add a `use` statement after your own namespace call or call `\Hybrid\Carbon\display()` directly.  I'll assume you know what you're doing if you're working with namespaces.  Otherwise, stick to the above._
 
 The most basic call will look like the following.
 
 ```
-<?php Hybrid\Carbon\render( 'featured', [
+<?php Hybrid\Carbon\display( 'featured', [
 	'size' => 'post-thumbnail',
 	'link' => 'post'
 ] ) ?>
@@ -114,7 +114,7 @@ make( $type, array $args = [] );
 image( $type, array $args = [] );
 
 // Renders the HTML output of the found Image object if one is found.
-render( $type, array $args = [] );
+display( $type, array $args = [] );
 
 // Returns the HTML string of the found Image object or an empty string.
 fetch( $type, array $args = [] );
@@ -132,7 +132,7 @@ Grabber::make( $type, array $args = [] );
 Grabber::image( $type, array $args = [] );
 
 // Renders the HTML output of the found Image object if one is found.
-Grabber::render( $type, array $args = [] );
+Grabber::display( $type, array $args = [] );
 
 // Returns the HTML string of the found Image object or an empty string.
 Grabber::fetch( $type, array $args = [] );
