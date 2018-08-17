@@ -66,7 +66,7 @@ function display( $type, array $args = [] ) {
  * @param  array         $args
  * @return string
  */
-function fetch( $type, array $args = [] ) {
+function render( $type, array $args = [] ) {
 
-	return Grabber::fetch( $type, $args );
+	return Grabber::render( $type, $args );
 }

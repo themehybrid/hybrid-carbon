@@ -81,10 +81,10 @@ class Grabber {
 	 * @param  array         $args
 	 * @return string
 	 */
-	public static function fetch( $type, array $args = [] ) {
+	public static function render( $type, array $args = [] ) {
 
 		$image = static::image( $type, $args );
 
-		return $image ? $image->fetch() : '';
+		return $image ? $image->render() : '';
 	}
 }

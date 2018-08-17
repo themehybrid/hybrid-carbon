@@ -37,7 +37,7 @@ interface Image {
 	 * @access public
 	 * @return string
 	 */
-	public function fetch();
+	public function render();
 
 	/**
 	 * Returns the image source value.

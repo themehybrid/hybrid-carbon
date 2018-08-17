@@ -75,7 +75,7 @@ class Attachment extends Image {
 	 * @access public
 	 * @return string
 	 */
-	public function fetch() {
+	public function render() {
 
 		$html = wp_get_attachment_image(
 			$this->attachment_id,

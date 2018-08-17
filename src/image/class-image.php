@@ -133,7 +133,7 @@ class Image implements ImageContract {
 	 */
 	public function display() {
 
-		echo $this->fetch();
+		echo $this->render();
 	}
 
 	/**
@@ -143,7 +143,7 @@ class Image implements ImageContract {
 	 * @access public
 	 * @return string
 	 */
-	public function fetch() {
+	public function render() {
 
 		return '';
 	}

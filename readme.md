@@ -117,7 +117,7 @@ image( $type, array $args = [] );
 display( $type, array $args = [] );
 
 // Returns the HTML string of the found Image object or an empty string.
-fetch( $type, array $args = [] );
+render( $type, array $args = [] );
 ```
 
 ### Static helper class
@@ -135,5 +135,5 @@ Grabber::image( $type, array $args = [] );
 Grabber::display( $type, array $args = [] );
 
 // Returns the HTML string of the found Image object or an empty string.
-Grabber::fetch( $type, array $args = [] );
+Grabber::render( $type, array $args = [] );
 ```
