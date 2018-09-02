@@ -11,8 +11,7 @@
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-# Check if the framework has been bootstrapped. If not, load the bootstrap files
-# and get the framework set up.
+# Check if the script has been bootstrapped. If not, load the bootstrap files.
 if ( ! defined( 'HYBRID_CARBON_BOOTSTRAPPED' ) ) {
 
 	# Autoload classes.
