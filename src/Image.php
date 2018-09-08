@@ -11,10 +11,9 @@
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-namespace Hybrid\Carbon\Util;
+namespace Hybrid\Carbon;
 
-use Hybrid\Carbon\Contracts\Image;
-use Hybrid\Carbon\Core\Carbon;
+use Hybrid\Carbon\Contracts\Image as ImageContract;
 
 /**
  * Image grabber class.
@@ -22,7 +21,21 @@ use Hybrid\Carbon\Core\Carbon;
  * @since  1.0.0
  * @access public
  */
-class Grabber {
+class Image {
+
+	/**
+	 * Creates and returns a new `Carbon` object.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @param  array|string  $type
+	 * @param  array         $args
+	 * @return Carbon
+	 */
+	public static function carbon( $type, array $args = [] ) {
+
+		return new Carbon( $type, $args );
+	}
 
 	/**
 	 * Creates and returns a new `Carbon` object and runs its `make()` method.
@@ -35,23 +48,23 @@ class Grabber {
 	 */
 	public static function make( $type, array $args = [] ) {
 
-		return ( new Carbon( $type, $args ) )->make();
+		return static::carbon( $type, $args )->make();
 	}
 
 	/**
-	 * Creates and returns a new `Image` object.
+	 * Creates and returns a new `ImageContract` object.
 	 *
 	 * @since  1.0.0
 	 * @access public
 	 * @param  array|string  $type
 	 * @param  array         $args
-	 * @return Image|bool
+	 * @return ImageContract|bool
 	 */
 	public static function image( $type, array $args = [] ) {
 
 		$image = static::make( $type, $args )->image();
 
-		return $image instanceof Image ? $image : false;
+		return $image instanceof ImageContract ? $image : false;
 	}
 
 	/**

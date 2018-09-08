@@ -38,4 +38,14 @@ interface ImageGrabber {
 	 * @return Image
 	 */
 	public function image();
+
+	/**
+	 * Returns a specific option or `false` if the option doesn't exist.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @param  string  $name
+	 * @return mixed
+	 */
+	public function option( $name );
 }

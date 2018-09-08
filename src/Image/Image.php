@@ -15,6 +15,7 @@
 namespace Hybrid\Carbon\Image;
 
 use Hybrid\Carbon\Contracts\Image as ImageContract;
+use Hybrid\Carbon\Contracts\ImageGrabber;
 use Hybrid\Carbon\Util\Helpers;
 
 /**
@@ -26,95 +27,69 @@ use Hybrid\Carbon\Util\Helpers;
 class Image implements ImageContract {
 
 	/**
-	 * Post ID.
+	 * ImageGrabber instance.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    ImageGrabber
+	 */
+	protected $manager;
+
+	/**
+	 * Image src.
+	 *
+	 * @since  1.0.0
+	 * @access protected
+	 * @var    string
+	 */
+	protected $src = '';
+
+	/**
+	 * Image width.
 	 *
 	 * @since  1.0.0
 	 * @access protected
 	 * @var    int
 	 */
-	protected $post_id = 0;
+	protected $width = 0;
 
 	/**
-	 * Image HTML attributes.
+	 * Image height.
 	 *
 	 * @since  1.0.0
 	 * @access protected
-	 * @var    array
+	 * @var    int
 	 */
-	protected $attr = [];
+	protected $height = 0;
 
 	/**
-	 * BEM-style HTML class "block" name.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $bem_block = 'entry';
-
-	/**
-	 * BEM-style HTML class "element" name.
+	 * Image alternative text.
 	 *
 	 * @since  1.0.0
 	 * @access protected
 	 * @var    string
 	 */
-	protected $bem_element = 'image';
+	protected $alt = '';
 
 	/**
-	 * Whether and what to link the image to.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string|bool
-	 */
-	protected $link = 'post';
-
-	/**
-	 * Link class.
+	 * Image caption.
 	 *
 	 * @since  1.0.0
 	 * @access protected
 	 * @var    string
 	 */
-	protected $link_class = '';
-
-	/**
-	 * Whether to add a caption (if one exists) to the image.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    bool
-	 */
-	protected $caption = false;
-
-	/**
-	 * HTML to add before image.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $before = '';
-
-	/**
-	 * HTML to add after image.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $after = '';
+	protected $caption = '';
 
 	/**
 	 * Creates a new Image object.
 	 *
 	 * @since  1.0.0
 	 * @access public
-	 * @param  array  $args
+	 * @param  ImageGrabber  $manager
+	 * @param  array         $args
 	 * @return void
 	 */
-	public function __construct( array $args = [] ) {
+	public function __construct( ImageGrabber $manager, array $args = [] ) {
 
 		foreach ( array_keys( get_object_vars( $this ) ) as $key ) {
 
@@ -122,6 +97,8 @@ class Image implements ImageContract {
 				$this->$key = $args[ $key ];
 			}
 		}
+
+		$this->manager = $manager;
 	}
 
 	/**
@@ -144,6 +121,25 @@ class Image implements ImageContract {
 	 * @return string
 	 */
 	public function render() {
+
+		$html = '';
+
+		if ( $attr = $this->attr() ) {
+
+			foreach ( $attr as $name => $value ) {
+
+				if ( 'src' === $name ) {
+
+					$html .= sprintf( ' %s="%s"', esc_html( $name ), esc_url( $value ) );
+
+				} elseif ( false !== $value ) {
+
+					$html .= sprintf( ' %s="%s"', esc_html( $name ), esc_attr( $value ) );
+				}
+			}
+
+			$html = sprintf( '<img%s />', $html );
+		}
 
 		return '';
 	}
@@ -193,7 +189,7 @@ class Image implements ImageContract {
 	 */
 	public function alt() {
 
-		return '';
+		return $this->alt;
 	}
 
 	/**
@@ -205,11 +201,25 @@ class Image implements ImageContract {
 	 */
 	protected function attr() {
 
-		return array_merge( [
-			'src'   => $this->src(),
-			'alt'   => $this->alt(),
-			'class' => join( ' ', $this->class() )
-		] + $this->attr );
+		$attr = [];
+
+		if ( ! $this->src() ) {
+			return $attr;
+		}
+
+		$attr['src']   = $this->src();
+		$attr['class'] = join( ' ', $this->class() );
+		$attr['alt']   = $this->alt();
+
+		if ( $this->width() ) {
+			$attr['width'] = $this->width();
+		}
+
+		if ( $this->height() ) {
+			$attr['height'] = $this->height();
+		}
+
+		return $attr;
 	}
 
 	/**
@@ -221,12 +231,17 @@ class Image implements ImageContract {
 	 */
 	protected function class() {
 
-		$class = [];
-
-		$class[] = Helpers::bem( $this->bem_block, $this->bem_element );
+		$class = [
+			$this->manager->option( 'class' )
+		];
 
 		if ( $o = $this->orientation() ) {
-			$class[] = Helpers::bem( $this->bem_block, $this->bem_element, "orientation-{$o}" );
+
+			$class[] = sprintf(
+				'%s--orientation-%s',
+				Helpers::classBase( $this->manager->option( 'class' ) ),
+				$o
+			);
 		}
 
 		return $class;
@@ -241,7 +256,7 @@ class Image implements ImageContract {
 	 */
 	public function caption() {
 
-		return '';
+		return $this->caption;
 	}
 
 	/**
@@ -258,6 +273,11 @@ class Image implements ImageContract {
 		$h = $this->height();
 
 		if ( $w && $h ) {
+
+			if ( $w === $h ) {
+				return 'square';
+			}
+
 			return $w > $h ? 'landscape' : 'portrait';
 		}
 
@@ -277,7 +297,7 @@ class Image implements ImageContract {
 		$html = $this->addLink( $html );
 		$html = $this->addCaption( $html );
 
-		return $this->before . $html . $this->after;
+		return $this->manager->option( 'before' ) . $html . $this->manager->option( 'after' );
 	}
 
 	/**
@@ -290,16 +310,12 @@ class Image implements ImageContract {
 	 */
 	protected function addLink( $html ) {
 
-		if ( 'post' === $this->link || true === $this->link ) {
-
-			$url = get_permalink( $this->post_id );
-
-			$class = $this->link_class ?: sprintf( '%s-link', Helpers::bem( $this->bem_block, $this->bem_element ) );
+		if ( 'post' === $this->manager->option( 'link' ) || true === $this->manager->option( 'link' ) ) {
 
 			$html = sprintf(
 				'<a href="%s" class="%s">%s</a>',
-				esc_url( $url ),
-				esc_attr( $class ),
+				esc_url( get_permalink( $this->manager->option( 'post_id' ) ) ),
+				esc_attr( $this->manager->option( 'link_class' ) ),
 				$html
 			);
 		}
@@ -317,7 +333,7 @@ class Image implements ImageContract {
 	 */
 	protected function addCaption( $html ) {
 
-		if ( $this->caption && $caption = $this->caption() ) {
+		if ( $this->manager->option( 'caption' ) && $caption = $this->caption() ) {
 
 			$html = img_caption_shortcode( [
 				'caption' => $caption,

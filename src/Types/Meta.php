@@ -36,13 +36,15 @@ class Meta extends Base {
 
 		// Loop through each of the given meta keys and attempt to find
 		// an image stored as a meta value.
-		foreach ( (array) $this->args['meta_key'] as $meta_key ) {
+		foreach ( (array) $this->manager->option( 'meta_key' ) as $meta_key ) {
 
-			$meta_value = get_post_meta( $this->args['post_id'], $meta_key, true );
+			$meta_value = get_post_meta( $this->manager->option( 'post_id' ), $meta_key, true );
 
 			if ( $meta_value && is_numeric( $meta_value ) && Helpers::isImageAttachment( $meta_value ) ) {
 
-				$image = new Attachment( $meta_value, $this->args );
+				$image = new Attachment( $this->manager, [
+					'attachment_id' => $meta_value
+				] );
 
 				if ( $image && $this->validate( $image ) ) {
 					return $image;

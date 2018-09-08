@@ -37,14 +37,14 @@ class Attached extends Base {
 		$image         = '';
 		$attachment_id = 0;
 
-		if ( Helpers::isImageAttachment( $this->args['post_id'] ) ) {
+		if ( Helpers::isImageAttachment( $this->manager->option( 'post_id' ) ) ) {
 
-			$attachment_id = $this->args['post_id'];
+			$attachment_id = $this->manager->option( 'post_id' );
 		} else {
 
 			$attachments = get_children( [
 				'numberposts'    => 1,
-				'post_parent'    => $this->args['post_id'],
+				'post_parent'    => $this->manager->option( 'post_id' ),
 				'post_status'    => 'inherit',
 				'post_type'      => 'attachment',
 				'post_mime_type' => 'image',
@@ -61,7 +61,9 @@ class Attached extends Base {
 
 		if ( 0 < $attachment_id && Helpers::isImageAttachment( $attachment_id ) ) {
 
-			$image = new Attachment( $attachment_id, $this->args );
+			$image = new Attachment( $this->manager, [
+				'attachment_id' => $attachment_id
+			] );
 		}
 
 		return $this->validate( $image ) ? $image : false;

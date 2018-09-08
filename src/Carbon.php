@@ -13,7 +13,7 @@
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
-namespace Hybrid\Carbon\Core;
+namespace Hybrid\Carbon;
 
 use Hybrid\Carbon\Contracts\Image;
 use Hybrid\Carbon\Contracts\ImageGrabber;
@@ -84,10 +84,9 @@ class Carbon implements ImageGrabber {
 			'meta_key'          => [ 'thumbnail', 'Thumbnail' ],
 			'size'              => has_image_size( 'post-thumbnail' ) ? 'post-thumbnail' : 'thumbnail',
 			'link'              => false,
-			'link_class'        => '',
+			'link_class'        => 'entry__image-link',
 			'attr'              => [],
-			'bem_block'         => 'entry',
-			'bem_element'       => 'image',
+			'class'             => 'entry__image',
 			'before'            => '',
 			'after'             => '',
 			'min_width'         => 0,
@@ -130,12 +129,10 @@ class Carbon implements ImageGrabber {
 
 		foreach ( $this->type as $type ) {
 
-			$args = apply_filters( "hybrid/carbon/{$type}/args", $this->args );
-
 			// Get the registered type class and create a new instance.
 			$class = $this->registered_types[ $type ];
 
-			$locate = new $class( $args );
+			$locate = new $class( $this );
 
 			// Bail if we do not have a `Type` contract.
 			if ( ! $locate instanceof Type ) {
@@ -166,5 +163,18 @@ class Carbon implements ImageGrabber {
 	public function image() {
 
 		return $this->image;
+	}
+
+	/**
+	 * Returns a specific option or `false` if the option doesn't exist.
+	 *
+	 * @since  1.0.0
+	 * @access public
+	 * @param  string  $name
+	 * @return mixed
+	 */
+	public function option( $name ) {
+
+		return isset( $this->args[ $name ] ) ? $this->args[ $name ] : false;
 	}
 }

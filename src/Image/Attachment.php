@@ -14,6 +14,7 @@
 
 namespace Hybrid\Carbon\Image;
 
+use Hybrid\Carbon\Contracts\ImageGrabber;
 use Hybrid\Carbon\Util\Helpers;
 
 /**
@@ -34,35 +35,27 @@ class Attachment extends Image {
 	protected $attachment_id = 0;
 
 	/**
-	 * Size of the image to get.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $size = 'thumbnail';
-
-	/**
 	 * Creates a new Image Attachment object.
 	 *
 	 * @since  1.0.0
 	 * @access public
-	 * @param  int    $attachment_id
-	 * @param  array  $args
+	 * @param  ImageGrabber  $manager
+	 * @param  array         $args
 	 * @return void
 	 */
-	public function __construct( $attachment_id, array $args = [] ) {
+	public function __construct( ImageGrabber $manager, array $args = [] ) {
 
-		parent::__construct( $args );
+		parent::__construct( $manager, $args );
 
-		$this->attachment_id = $attachment_id;
+		$data = wp_get_attachment_image_src(
+			$this->attachment_id,
+			$this->manager->option( 'size' )
+		);
 
-		$image = wp_get_attachment_image_src( $this->attachment_id, $this->size );
-
-		if ( $image ) {
-			$this->src     = $image[0];
-			$this->width   = $image[1];
-			$this->height  = $image[2];
+		if ( $data ) {
+			$this->src    = $data[0];
+			$this->width  = $data[1];
+			$this->height = $data[2];
 		}
 	}
 
@@ -79,7 +72,7 @@ class Attachment extends Image {
 
 		$html = wp_get_attachment_image(
 			$this->attachment_id,
-			$this->size,
+			$this->manager->option( 'size' ),
 			false,
 			$this->attr()
 		);
@@ -112,9 +105,7 @@ class Attachment extends Image {
 	 */
 	protected function attr() {
 
-		return array_merge( [
-			'class' => join( ' ', $this->class() )
-		] + $this->attr );
+		return [ 'class' => join( ' ', $this->class() ) ];
 	}
 
 	/**
@@ -128,7 +119,11 @@ class Attachment extends Image {
 
 		$class = parent::class();
 
-		$class[] = Helpers::bem( $this->bem_block, $this->bem_element, "size-{$this->size}" );
+		$class[] = sprintf(
+			'%s--size-%s',
+			Helpers::classBase( $this->manager->option( 'class' ) ),
+			$this->manager->option( 'size' )
+		);
 
 		return $class;
 	}

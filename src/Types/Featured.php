@@ -37,11 +37,13 @@ class Featured extends Base {
 		$image = '';
 
 		// Check for a post image ID (set by WP as a custom field).
-		$attachment_id = get_post_thumbnail_id( $this->args['post_id'] );
+		$attachment_id = get_post_thumbnail_id( $this->manager->option( 'post_id' ) );
 
 		if ( 0 < $attachment_id && Helpers::isImageAttachment( $attachment_id ) ) {
 
-			$image = new Attachment( $attachment_id, $this->args );
+			$image = new Attachment( $this->manager, [
+				'attachment_id' => $attachment_id
+			] );
 		}
 
 		return $this->validate( $image ) ? $image : false;

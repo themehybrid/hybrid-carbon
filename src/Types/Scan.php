@@ -50,7 +50,7 @@ class Scan extends Base {
 		$image_ids = [];
 
 		// Get the post content.
-		$post_content = get_post_field( 'post_content', $this->args['post_id'] );
+		$post_content = get_post_field( 'post_content', $this->manager->option( 'post_id' ) );
 
 		$methods = [
 			'scanBlocks',
@@ -76,7 +76,9 @@ class Scan extends Base {
 
 				if ( 0 < $attachment_id && Helpers::isImageAttachment( $attachment_id ) ) {
 
-					$image = new Attachment( $attachment_id, $this->args );
+					$image = new Attachment( $this->manager, [
+						'attachment_id' => $attachment_id
+					] );
 				}
 
 				if ( $image && $this->validate( $image ) ) {

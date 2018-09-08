@@ -15,6 +15,7 @@
 namespace Hybrid\Carbon\Types;
 
 use Hybrid\Carbon\Contracts\Image;
+use Hybrid\Carbon\Contracts\ImageGrabber;
 use Hybrid\Carbon\Contracts\Type;
 use Hybrid\Carbon\Util\Helpers;
 
@@ -27,25 +28,25 @@ use Hybrid\Carbon\Util\Helpers;
 abstract class Base implements Type {
 
 	/**
-	 * Array of arguments passed in.
+	 * ImageGrabber instance.
 	 *
 	 * @since  1.0.0
 	 * @access protected
-	 * @var    array
+	 * @var    ImageGrabber
 	 */
-	protected $args = [];
+	protected $manager;
 
 	/**
 	 * Creates a new location type object.
 	 *
 	 * @since  1.0.0
 	 * @access protected
-	 * @param  array      $args
+	 * @param  ImageGrabber  $manager
 	 * @return void
 	 */
-	public function __construct( $args = [] ) {
+	public function __construct( ImageGrabber $manager ) {
 
-		$this->args = $args;
+		$this->manager = $manager;
 	}
 
 	/**
@@ -85,11 +86,11 @@ abstract class Base implements Type {
 	 */
 	protected function checkRequirements( Image $image ) {
 
-		if ( ! Helpers::hasMinDimension( $image->width(), $this->args['min_width'] ) ) {
+		if ( ! Helpers::hasMinDimension( $image->width(), $this->manager->option( 'min_width' ) ) ) {
 			return false;
 		}
 
-		if ( ! Helpers::hasMinDimension( $image->height(), $this->args['min_height'] ) ) {
+		if ( ! Helpers::hasMinDimension( $image->height(), $this->manager->option( 'min_height' ) ) ) {
 			return false;
 		}
 

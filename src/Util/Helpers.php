@@ -54,27 +54,18 @@ class Helpers {
 	}
 
 	/**
-	 * Creates a BEM-style HTML class.
+	 * Returns the first HTML class name if the class is separated by spaces.
+	 * Otherwise, the original string will be returned.
 	 *
 	 * @since  1.0.0
 	 * @access public
-	 * @param  string       $block
-	 * @param  string       $element
-	 * @param  string|array $mod
+	 * @param  string  $class
 	 * @return string
 	 */
-	public static function bem( $block, $element = '', $mod = '' ) {
+	public static function classBase( $class ) {
 
-		$bem = $block;
+		$base_class = explode( ' ', $class );
 
-		if ( $element ) {
-			$bem .= "__{$element}";
-		}
-
-		if ( $mod ) {
-			$bem .= "--{$mod}";
-		}
-
-		return $bem;
+		return array_shift( $base_class );
 	}
 }
