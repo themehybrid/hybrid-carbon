@@ -105,7 +105,11 @@ class Attachment extends Image {
 	 */
 	protected function attr() {
 
-		return [ 'class' => join( ' ', $this->class() ) ];
+		$attr = [
+			'class' => join( ' ', $this->class() )
+		];
+
+		return $this->manager->option( 'attr' ) + $attr;
 	}
 
 	/**

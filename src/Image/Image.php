@@ -219,7 +219,7 @@ class Image implements ImageContract {
 			$attr['height'] = $this->height();
 		}
 
-		return $attr;
+		return $this->manager->option( 'attr' ) + $attr;
 	}
 
 	/**
