@@ -35,7 +35,7 @@ cd path/to/wp-content/themes/<your-theme-name>
 Then, use Composer to install the package.
 
 ```bash
-composer require justintadlock/hybrid-carbon
+composer require themehybrid/hybrid-carbon
 ```
 
 Assuming you're not already including the Composer autoload file for your theme and are shipping this as part of your theme package, you'll want something like the following bit of code in your theme's `functions.php` to autoload this package (and any others).
