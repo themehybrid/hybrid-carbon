@@ -4,10 +4,11 @@
  *
  * Defines a contract for a class that grabs an image.
  *
- * @package   HybridBreadcrumbs
- * @author    Justin Tadlock <justintadlock@gmail.com>
- * @copyright Copyright (c) 2018, Justin Tadlock
- * @link      https://github.com/justintadlock/hybrid-breadcrumbs
+ * @package   HybridCarbon
+ * @link      https://github.com/themehybrid/hybrid-carbon
+ *
+ * @author    Theme Hybrid
+ * @copyright Copyright (c) 2008 - 2023, Theme Hybrid
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
