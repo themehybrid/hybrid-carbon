@@ -1,10 +1,11 @@
 {
-	"name"        : "themehybrid/hybrid-carbon",
-	"description" : "God-like post featured image script.",
-	"keywords"    : [ "wordpress" ],
-	"homepage"    : "https://github.com/themehybrid/hybrid-carbon",
-	"license"     : "GPL-2.0-or-later",
-	"authors"     : [
+	"name": "themehybrid/hybrid-carbon",
+	"description": "An awe-inspiring script for the post featured image script.",
+	"license": "GPL-2.0-or-later",
+	"keywords": [
+		"wordpress"
+	],
+	"authors": [
 		{
 			"name": "Theme Hybrid",
 			"email": "themehybrid@gmail.com",
@@ -12,16 +13,17 @@
 			"role": "Developer"
 		}
 	],
-	"support"     : {
-		"issues" : "https://github.com/themehybrid/hybrid-carbon/issues",
-		"forum"  : "https://themehybrid.com/board/topics"
+	"homepage": "https://github.com/themehybrid/hybrid-carbon",
+	"support": {
+		"issues": "https://github.com/themehybrid/hybrid-carbon/issues",
+		"forum": "https://themehybrid.com/board/topics"
 	},
-	"autoload"    : {
-		"psr-4" : {
-			"Hybrid\\Carbon\\" : "src/"
+	"require": {
+		"php": ">=7.4"
+	},
+	"autoload": {
+		"psr-4": {
+			"Hybrid\\Carbon\\": "src/"
 		}
-	},
-	"require"     : {
-		"php" : ">=7.4"
 	}
 }

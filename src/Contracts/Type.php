@@ -18,16 +18,19 @@ namespace Hybrid\Carbon\Contracts;
  * Type interface.
  *
  * @since  1.0.0
+ *
  * @access public
  */
 interface Type {
 
-	/**
-	 * Must return an `Image` object or `false` if no image was found.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @return Image|bool
-	 */
-	public function make();
+    /**
+     * Must return an `Image` object or `false` if no image was found.
+     *
+     * @since  1.0.0
+     * @return \Hybrid\Carbon\Contracts\Image|bool
+     *
+     * @access protected
+     */
+    public function make();
+
 }

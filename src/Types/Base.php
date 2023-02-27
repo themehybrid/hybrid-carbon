@@ -24,77 +24,84 @@ use Hybrid\Carbon\Util\Helpers;
  * Base location class.
  *
  * @since  1.0.0
+ *
  * @access public
  */
 abstract class Base implements Type {
 
-	/**
-	 * ImageGrabber instance.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    ImageGrabber
-	 */
-	protected $manager;
+    /**
+     * ImageGrabber instance.
+     *
+     * @since  1.0.0
+     * @var \Hybrid\Carbon\Contracts\ImageGrabber
+     *
+     * @access protected
+     */
+    protected $manager;
 
-	/**
-	 * Creates a new location type object.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @param  ImageGrabber  $manager
-	 * @return void
-	 */
-	public function __construct( ImageGrabber $manager ) {
+    /**
+     * Creates a new location type object.
+     *
+     * @since  1.0.0
+     * @param \Hybrid\Carbon\Contracts\ImageGrabber $manager
+     * @return void
+     *
+     * @access protected
+     */
+    public function __construct( ImageGrabber $manager ) {
 
-		$this->manager = $manager;
-	}
+        $this->manager = $manager;
+    }
 
-	/**
-	 * Returns an `Image` object or `false` if no image is found.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @param  array      $args
-	 * @return Image|bool
-	 */
-	abstract public function make();
+    /**
+     * Returns an `Image` object or `false` if no image is found.
+     *
+     * @since  1.0.0
+     * @param  array $args
+     * @return \Hybrid\Carbon\Contracts\Image|bool
+     *
+     * @access protected
+     */
+    abstract public function make();
 
-	/**
-	 * Creates a new location type object.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @param  mixed      $image
-	 * @return bool
-	 */
-	protected function validate( $image ) {
+    /**
+     * Creates a new location type object.
+     *
+     * @since  1.0.0
+     * @param  mixed $image
+     * @return bool
+     *
+     * @access protected
+     */
+    protected function validate( $image ) {
 
-		if ( ! $image || ! $image instanceof Image ) {
-			return false;
-		}
+        if ( ! $image || ! $image instanceof Image ) {
+            return false;
+        }
 
-		return $this->checkRequirements( $image );
-	}
+        return $this->checkRequirements( $image );
+    }
 
-	/**
-	 * Checks if an image meets any requirements.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @param  Image     $image
-	 * @return bool
-	 */
-	protected function checkRequirements( Image $image ) {
+    /**
+     * Checks if an image meets any requirements.
+     *
+     * @since  1.0.0
+     * @param \Hybrid\Carbon\Contracts\Image $image
+     * @return bool
+     *
+     * @access protected
+     */
+    protected function checkRequirements( Image $image ) {
 
-		if ( ! Helpers::hasMinDimension( $image->width(), $this->manager->option( 'min_width' ) ) ) {
-			return false;
-		}
+        if ( ! Helpers::hasMinDimension( $image->width(), $this->manager->option( 'min_width' ) ) ) {
+            return false;
+        }
 
-		if ( ! Helpers::hasMinDimension( $image->height(), $this->manager->option( 'min_height' ) ) ) {
-			return false;
-		}
+        if ( ! Helpers::hasMinDimension( $image->height(), $this->manager->option( 'min_height' ) ) ) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
+
 }
