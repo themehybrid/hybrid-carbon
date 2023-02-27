@@ -5,9 +5,10 @@
  * Searches for and returns a featured image if the post has one.
  *
  * @package   HybridCarbon
- * @author    Justin Tadlock <justintadlock@gmail.com>
- * @copyright Copyright (c) 2018, Justin Tadlock
- * @link      https://github.com/justintadlock/hybrid-carbon
+ * @link      https://github.com/themehybrid/hybrid-carbon
+ *
+ * @author    Theme Hybrid
+ * @copyright Copyright (c) 2008 - 2023, Theme Hybrid
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
@@ -20,32 +21,35 @@ use Hybrid\Carbon\Util\Helpers;
  * Featured location class.
  *
  * @since  1.0.0
+ *
  * @access public
  */
 class Featured extends Base {
 
-	/**
-	 * Returns an `Image` object or `false` if no image is found.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @param  array      $args
-	 * @return Image|bool
-	 */
-	public function make() {
+    /**
+     * Returns an `Image` object or `false` if no image is found.
+     *
+     * @since  1.0.0
+     * @param  array $args
+     * @return \Hybrid\Carbon\Types\Image|bool
+     *
+     * @access protected
+     */
+    public function make() {
 
-		$image = '';
+        $image = '';
 
-		// Check for a post image ID (set by WP as a custom field).
-		$attachment_id = get_post_thumbnail_id( $this->manager->option( 'post_id' ) );
+        // Check for a post image ID (set by WP as a custom field).
+        $attachment_id = get_post_thumbnail_id( $this->manager->option( 'post_id' ) );
 
-		if ( 0 < $attachment_id && Helpers::isImageAttachment( $attachment_id ) ) {
+        if ( 0 < $attachment_id && Helpers::isImageAttachment( $attachment_id ) ) {
 
-			$image = new Attachment( $this->manager, [
-				'attachment_id' => $attachment_id
-			] );
-		}
+            $image = new Attachment( $this->manager, [
+                'attachment_id' => $attachment_id,
+            ] );
+        }
 
-		return $this->validate( $image ) ? $image : false;
-	}
+        return $this->validate( $image ) ? $image : false;
+    }
+
 }

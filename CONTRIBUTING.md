@@ -1,6 +1,6 @@
 # Contributing
 
-The code for the this project is handled via its [GitHub Repository](https://github.com/justintadlock/hybrid-carbon).  You can open tickets, create patches, and send pull requests there.
+The code for the this project is handled via its [GitHub Repository](https://github.com/themehybrid/hybrid-carbon).  You can open tickets, create patches, and send pull requests there.
 
 ## Pull requests
 

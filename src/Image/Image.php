@@ -6,9 +6,10 @@
  * any functions used.
  *
  * @package   HybridCarbon
- * @author    Justin Tadlock <justintadlock@gmail.com>
- * @copyright Copyright (c) 2018, Justin Tadlock
- * @link      https://github.com/justintadlock/hybrid-carbon
+ * @link      https://github.com/themehybrid/hybrid-carbon
+ *
+ * @author    Theme Hybrid
+ * @copyright Copyright (c) 2008 - 2023, Theme Hybrid
  * @license   http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  */
 
@@ -22,325 +23,347 @@ use Hybrid\Carbon\Util\Helpers;
  * Image class.
  *
  * @since  1.0.0
+ *
  * @access public
  */
 class Image implements ImageContract {
 
-	/**
-	 * ImageGrabber instance.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    ImageGrabber
-	 */
-	protected $manager;
+    /**
+     * ImageGrabber instance.
+     *
+     * @since  1.0.0
+     * @var \Hybrid\Carbon\Contracts\ImageGrabber
+     *
+     * @access protected
+     */
+    protected $manager;
 
-	/**
-	 * Image src.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $src = '';
+    /**
+     * Image src.
+     *
+     * @since  1.0.0
+     * @var    string
+     *
+     * @access protected
+     */
+    protected $src = '';
 
-	/**
-	 * Image width.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    int
-	 */
-	protected $width = 0;
+    /**
+     * Image width.
+     *
+     * @since  1.0.0
+     * @var    int
+     *
+     * @access protected
+     */
+    protected $width = 0;
 
-	/**
-	 * Image height.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    int
-	 */
-	protected $height = 0;
+    /**
+     * Image height.
+     *
+     * @since  1.0.0
+     * @var    int
+     *
+     * @access protected
+     */
+    protected $height = 0;
 
-	/**
-	 * Image alternative text.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $alt = '';
+    /**
+     * Image alternative text.
+     *
+     * @since  1.0.0
+     * @var    string
+     *
+     * @access protected
+     */
+    protected $alt = '';
 
-	/**
-	 * Image caption.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @var    string
-	 */
-	protected $caption = '';
+    /**
+     * Image caption.
+     *
+     * @since  1.0.0
+     * @var    string
+     *
+     * @access protected
+     */
+    protected $caption = '';
 
-	/**
-	 * Creates a new Image object.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @param  ImageGrabber  $manager
-	 * @param  array         $args
-	 * @return void
-	 */
-	public function __construct( ImageGrabber $manager, array $args = [] ) {
+    /**
+     * Creates a new Image object.
+     *
+     * @since  1.0.0
+     * @param \Hybrid\Carbon\Contracts\ImageGrabber $manager
+     * @param  array                                 $args
+     * @return void
+     *
+     * @access public
+     */
+    public function __construct( ImageGrabber $manager, array $args = [] ) {
 
-		foreach ( array_keys( get_object_vars( $this ) ) as $key ) {
+        foreach ( array_keys( get_object_vars( $this ) ) as $key ) {
 
-			if ( isset( $args[ $key ] ) ) {
-				$this->$key = $args[ $key ];
-			}
-		}
+            if ( isset( $args[ $key ] ) ) {
+                $this->$key = $args[ $key ];
+            }
+        }
 
-		$this->manager = $manager;
-	}
+        $this->manager = $manager;
+    }
 
-	/**
-	 * Renders the image HTML output.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return void
-	 */
-	public function display() {
+    /**
+     * Renders the image HTML output.
+     *
+     * @since  1.0.0
+     * @return void
+     *
+     * @access public
+     */
+    public function display() {
 
-		echo $this->render();
-	}
+        echo $this->render();
+    }
 
-	/**
-	 * Returns the image HTML output.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return string
-	 */
-	public function render() {
+    /**
+     * Returns the image HTML output.
+     *
+     * @since  1.0.0
+     * @return string
+     *
+     * @access public
+     */
+    public function render() {
 
-		$html = '';
+        $html = '';
 
-		if ( $attr = $this->attr() ) {
+        if ( $attr = $this->attr() ) {
 
-			foreach ( $attr as $name => $value ) {
+            foreach ( $attr as $name => $value ) {
 
-				if ( 'src' === $name ) {
+                if ( 'src' === $name ) {
 
-					$html .= sprintf( ' %s="%s"', esc_html( $name ), esc_url( $value ) );
+                    $html .= sprintf( ' %s="%s"', esc_html( $name ), esc_url( $value ) );
 
-				} elseif ( false !== $value ) {
+                } elseif ( false !== $value ) {
 
-					$html .= sprintf( ' %s="%s"', esc_html( $name ), esc_attr( $value ) );
-				}
-			}
+                    $html .= sprintf( ' %s="%s"', esc_html( $name ), esc_attr( $value ) );
+                }
+            }
 
-			$html = sprintf( '<img%s />', $html );
-		}
+            $html = sprintf( '<img%s />', $html );
+        }
 
-		return '';
-	}
+        return '';
+    }
 
-	/**
-	 * Returns the image source value.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return string
-	 */
-	public function src() {
+    /**
+     * Returns the image source value.
+     *
+     * @since  1.0.0
+     * @return string
+     *
+     * @access public
+     */
+    public function src() {
 
-		return $this->src;
-	}
+        return $this->src;
+    }
 
-	/**
-	 * Returns the image width value.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return int
-	 */
-	public function width() {
+    /**
+     * Returns the image width value.
+     *
+     * @since  1.0.0
+     * @return int
+     *
+     * @access public
+     */
+    public function width() {
 
-		return $this->width;
-	}
+        return $this->width;
+    }
 
-	/**
-	 * Returns the image height value.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return int
-	 */
-	public function height() {
+    /**
+     * Returns the image height value.
+     *
+     * @since  1.0.0
+     * @return int
+     *
+     * @access public
+     */
+    public function height() {
 
-		return $this->height;
-	}
+        return $this->height;
+    }
 
-	/**
-	 * Returns the image alt value.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return string
-	 */
-	public function alt() {
+    /**
+     * Returns the image alt value.
+     *
+     * @since  1.0.0
+     * @return string
+     *
+     * @access public
+     */
+    public function alt() {
 
-		return $this->alt;
-	}
+        return $this->alt;
+    }
 
-	/**
-	 * Returns the image attributes.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return string
-	 */
-	protected function attr() {
+    /**
+     * Returns the image attributes.
+     *
+     * @since  1.0.0
+     * @return string
+     *
+     * @access public
+     */
+    protected function attr() {
 
-		$attr = [];
+        $attr = [];
 
-		if ( ! $this->src() ) {
-			return $attr;
-		}
+        if ( ! $this->src() ) {
+            return $attr;
+        }
 
-		$attr['src']   = $this->src();
-		$attr['class'] = join( ' ', $this->class() );
-		$attr['alt']   = $this->alt();
+        $attr['src']   = $this->src();
+        $attr['class'] = join( ' ', $this->class() );
+        $attr['alt']   = $this->alt();
 
-		if ( $this->width() ) {
-			$attr['width'] = $this->width();
-		}
+        if ( $this->width() ) {
+            $attr['width'] = $this->width();
+        }
 
-		if ( $this->height() ) {
-			$attr['height'] = $this->height();
-		}
+        if ( $this->height() ) {
+            $attr['height'] = $this->height();
+        }
 
-		return $this->manager->option( 'attr' ) + $attr;
-	}
+        return $this->manager->option( 'attr' ) + $attr;
+    }
 
-	/**
-	 * Returns the image element class.
-	 *
-	 * @since  1.0.0
-	 * @access protected
-	 * @return array
-	 */
-	protected function class() {
+    /**
+     * Returns the image element class.
+     *
+     * @since  1.0.0
+     * @return array
+     *
+     * @access protected
+     */
+    protected function class() {
 
-		$class = [
-			$this->manager->option( 'class' )
-		];
+        $class = [
+            $this->manager->option( 'class' ),
+        ];
 
-		if ( $o = $this->orientation() ) {
+        if ( $o = $this->orientation() ) {
 
-			$class[] = sprintf(
-				'%s--orientation-%s',
-				Helpers::classBase( $this->manager->option( 'class' ) ),
-				$o
-			);
-		}
+            $class[] = sprintf(
+                '%s--orientation-%s',
+                Helpers::classBase( $this->manager->option( 'class' ) ),
+                $o
+            );
+        }
 
-		return $class;
-	}
+        return $class;
+    }
 
-	/**
-	 * Returns the image caption.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return string
-	 */
-	public function caption() {
+    /**
+     * Returns the image caption.
+     *
+     * @since  1.0.0
+     * @return string
+     *
+     * @access public
+     */
+    public function caption() {
 
-		return $this->caption;
-	}
+        return $this->caption;
+    }
 
-	/**
-	 * Returns the image orientation (`landscape` or `portrait`) if one can
-	 * be determined. Else, returns an empty string.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @return string
-	 */
-	public function orientation() {
+    /**
+     * Returns the image orientation (`landscape` or `portrait`) if one can
+     * be determined. Else, returns an empty string.
+     *
+     * @since  1.0.0
+     * @return string
+     *
+     * @access public
+     */
+    public function orientation() {
 
-		$w = $this->width();
-		$h = $this->height();
+        $w = $this->width();
+        $h = $this->height();
 
-		if ( $w && $h ) {
+        if ( $w && $h ) {
 
-			if ( $w === $h ) {
-				return 'square';
-			}
+            if ( $w === $h ) {
+                return 'square';
+            }
 
-			return $w > $h ? 'landscape' : 'portrait';
-		}
+            return $w > $h ? 'landscape' : 'portrait';
+        }
 
-		return '';
-	}
+        return '';
+    }
 
-	/**
-	 * Wraps the image with HTML wrappers.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @param  string  $html
-	 * @return string
-	 */
-	protected function wrap( $html ) {
+    /**
+     * Wraps the image with HTML wrappers.
+     *
+     * @since  1.0.0
+     * @param  string $html
+     * @return string
+     *
+     * @access public
+     */
+    protected function wrap( $html ) {
 
-		$html = $this->addLink( $html );
-		$html = $this->addCaption( $html );
+        $html = $this->addLink( $html );
+        $html = $this->addCaption( $html );
 
-		return $this->manager->option( 'before' ) . $html . $this->manager->option( 'after' );
-	}
+        return $this->manager->option( 'before' ) . $html . $this->manager->option( 'after' );
+    }
 
-	/**
-	 * Wraps the image HTML with a link.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @param  string  $html
-	 * @return string
-	 */
-	protected function addLink( $html ) {
+    /**
+     * Wraps the image HTML with a link.
+     *
+     * @since  1.0.0
+     * @param  string $html
+     * @return string
+     *
+     * @access public
+     */
+    protected function addLink( $html ) {
 
-		if ( 'post' === $this->manager->option( 'link' ) || true === $this->manager->option( 'link' ) ) {
+        if ( 'post' === $this->manager->option( 'link' ) || true === $this->manager->option( 'link' ) ) {
 
-			$html = sprintf(
-				'<a href="%s" class="%s">%s</a>',
-				esc_url( get_permalink( $this->manager->option( 'post_id' ) ) ),
-				esc_attr( $this->manager->option( 'link_class' ) ),
-				$html
-			);
-		}
+            $html = sprintf(
+                '<a href="%s" class="%s">%s</a>',
+                esc_url( get_permalink( $this->manager->option( 'post_id' ) ) ),
+                esc_attr( $this->manager->option( 'link_class' ) ),
+                $html
+            );
+        }
 
-		return $html;
-	}
+        return $html;
+    }
 
-	/**
-	 * Wraps the image HTML with a caption.
-	 *
-	 * @since  1.0.0
-	 * @access public
-	 * @param  string  $html
-	 * @return string
-	 */
-	protected function addCaption( $html ) {
+    /**
+     * Wraps the image HTML with a caption.
+     *
+     * @since  1.0.0
+     * @param  string $html
+     * @return string
+     *
+     * @access public
+     */
+    protected function addCaption( $html ) {
 
-		if ( $this->manager->option( 'caption' ) && $caption = $this->caption() ) {
+        if ( $this->manager->option( 'caption' ) && $caption = $this->caption() ) {
 
-			$html = img_caption_shortcode( [
-				'caption' => $caption,
-				'width'   => $this->width()
-			], $html );
-		}
+            $html = img_caption_shortcode( [
+                'caption' => $caption,
+                'width'   => $this->width(),
+            ], $html );
+        }
 
-		return $html;
-	}
+        return $html;
+    }
+
 }
